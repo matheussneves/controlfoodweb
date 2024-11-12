@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css'
-import SignInSide from "./pages/sign-in-side/SignInSide"
-//import Dashboard from "./pages/dashboard/Dashboard"
-import MarketingPage from "./pages/marketing-page/MarketingPage"
-import SignUp from "./pages/sign-up/SignUp"
+
+import LoginPage from "./pages/login_page/LoginPage"
+import Home from "./pages/dashboard/Dashboard.tsx"
 function App() {
   const [count, setCount] = useState(0)
 //     <Route path="/Dashboard" element={<Dashboard />} />
@@ -12,9 +11,9 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/SignInSide" element={<SignInSide />} />
-          <Route path="/" element={<MarketingPage />} />
-          <Route path="/SignUp" element={<SignUp />} />
+          
+          <Route path="/" element={< LoginPage/>} />
+          <Route path="/home" element={<Home />} />
         </Routes>
       </BrowserRouter>
     </div>
