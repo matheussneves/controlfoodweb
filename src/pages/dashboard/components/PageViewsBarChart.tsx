@@ -28,11 +28,7 @@ export default function PageViewsBarChart() {
               alignItems: 'center',
               gap: 1,
             }}
-          >
-            <Typography variant="h4" component="p">
-              1.9M
-            </Typography>
-      
+          >    
           </Stack>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             Tipos mais pedidos

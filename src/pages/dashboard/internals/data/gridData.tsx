@@ -125,7 +125,7 @@ export const columns: GridColDef[] = [
 export const rows: GridRowsProp = [
   {
     id: 1,
-    pageTitle: 'Homepage Overview',
+    pageTitle: 'Lasanha',
     status: 'Entregue',
     eventCount: "Pix",
     users: "Robson",
@@ -135,7 +135,7 @@ export const rows: GridRowsProp = [
   },
   {
     id: 2,
-    pageTitle: 'Product Details - Gadgets',
+    pageTitle: 'Omelete',
     status: 'Entregue',
     eventCount: "Crédito",
     users: "Larissa",
@@ -145,7 +145,7 @@ export const rows: GridRowsProp = [
   },
   {
     id: 3,
-    pageTitle: 'Checkout Process - Step 1',
+    pageTitle: 'Bife a cavalo',
     status: 'Pendente',
     eventCount: "Pix",
     users: 'Claudio',
@@ -155,7 +155,7 @@ export const rows: GridRowsProp = [
   },
   {
     id: 4,
-    pageTitle: 'User Profile Dashboard',
+    pageTitle: 'Omelete',
     status: 'Entregue',
     eventCount: "Pix",
     users: "Silvio",
@@ -165,7 +165,7 @@ export const rows: GridRowsProp = [
   },
   {
     id: 5,
-    pageTitle: 'Article Listing - Tech News',
+    pageTitle: 'Omelete',
     status: 'Pendente',
     eventCount: "Pix",
     users: 'Robson',
@@ -175,7 +175,7 @@ export const rows: GridRowsProp = [
   },
   {
     id: 6,
-    pageTitle: 'FAQs - Customer Support',
+    pageTitle: 'Lasanha',
     status: 'Entregue',
     eventCount: "Débito",
     users: "Silvio",
@@ -185,7 +185,7 @@ export const rows: GridRowsProp = [
   },
   {
     id: 7,
-    pageTitle: 'Product Comparison - Laptops',
+    pageTitle: 'Bife a cavalo',
     status: 'Pendente',
     eventCount: "Dinheiro",
     users: "Silvio",
@@ -195,7 +195,7 @@ export const rows: GridRowsProp = [
   },
   {
     id: 8,
-    pageTitle: 'Shopping Cart - Electronics',
+    pageTitle: 'Bife a cavalo',
     status: 'Entregue',
     eventCount: "Crédito",
     users: "Larissa",
@@ -205,7 +205,7 @@ export const rows: GridRowsProp = [
   },
   {
     id: 9,
-    pageTitle: 'Payment Confirmation - Bank Transfer',
+    pageTitle: 'Lasanha',
     status: 'Pendente',
     eventCount: "Crédito",
     users: "Claudio",

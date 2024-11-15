@@ -23,7 +23,7 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
-export default function SideMenu() {
+export default function SideMenu({ setSelectedComponent }) {
   return (
     <Drawer
       variant="permanent"
@@ -43,7 +43,7 @@ export default function SideMenu() {
       >
       </Box>
       <Divider />
-      <MenuContent />
+      <MenuContent setSelectedComponent={setSelectedComponent} />
       <CardAlert />
       <Stack
         direction="row"

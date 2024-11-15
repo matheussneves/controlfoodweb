@@ -48,23 +48,23 @@ export function deleteUser(id) {
 }
 
 // Funções para Ingredientes
-export function createIngredient(data) {
+export function createIngrediente(data) {
   return apiRequest('/ingredientes', 'POST', data);
 }
 
-export function getIngredients() {
+export function getIngredientes() {
   return apiRequest('/ingredientes', 'GET');
 }
 
-export function getIngredientById(id) {
+export function getIngredienteById(id) {
   return apiRequest(`/ingredientes/${id}`, 'GET');
 }
 
-export function updateIngredient(id, data) {
+export function updateIngrediente(id, data) {
   return apiRequest(`/ingredientes/${id}`, 'PUT', data);
 }
 
-export function deleteIngredient(id) {
+export function deleteIngrediente(id) {
   return apiRequest(`/ingredientes/${id}`, 'DELETE');
 }
 
@@ -150,4 +150,64 @@ export function updateCliente(id, data) {
 
 export function deleteCliente(id) {
   return apiRequest(`/clientes/${id}`, 'DELETE');
+}
+
+export function createDeliverer(data) {
+  return apiRequest('/entregadores', 'POST', data);
+}
+
+export function getDeliverers() {
+  return apiRequest('/entregadores', 'GET');
+}
+
+export function getDelivererById(id) {
+  return apiRequest(`/entregadores/${id}`, 'GET');
+}
+
+export function updateDeliverer(id, data) {
+  return apiRequest(`/entregadores/${id}`, 'PUT', data);
+}
+
+export function deleteDeliverer(id) {
+  return apiRequest(`/entregadores/${id}`, 'DELETE');
+}
+
+export function createEntrega(data) {
+  return apiRequest('/entrega', 'POST', data);
+}
+
+export function getEntregas() {
+  return apiRequest('/entrega', 'GET');
+}
+
+export function getEntregaById(id) {
+  return apiRequest(`/entrega/${id}`, 'GET');
+}
+
+export function updateEntrega(id, data) {
+  return apiRequest(`/entrega/${id}`, 'PUT', data);
+}
+
+export function deleteEntrega(id) {
+  return apiRequest(`/entrega/${id}`, 'DELETE');
+}
+
+export function createPedido(data) {
+  return apiRequest('/entrega', 'POST', data);
+}
+
+export function getPedidos() {
+  return apiRequest('/pedidos', 'GET');
+}
+
+export function getPedidoById(id) {
+  return apiRequest(`/pedidos/${id}`, 'GET');
+}
+
+export function updatePedido(id, data) {
+  return apiRequest(`/pedidos/${id}`, 'PUT', data);
+}
+
+export function deletePedido(id) {
+  return apiRequest(`/pedidos/${id}`, 'DELETE');
 }

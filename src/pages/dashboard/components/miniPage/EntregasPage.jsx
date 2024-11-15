@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// import { 
-//   createEntrega, 
-//   getEntregas, 
-//   getEntregaById, 
-//   updateEntrega, 
-//   deleteEntrega 
-// } from '../../../../apis/requests'; // Importa as funções de API para entregas
+ import { createEntrega, getEntregas, getEntregaById, updateEntrega, deleteEntrega  } from '../../../../apis/requests'; // Importa as funções de API para entregas
 import { Container, Box, Grid, Typography, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Snackbar, Alert } from '@mui/material';
 
 function EntregasPage() {

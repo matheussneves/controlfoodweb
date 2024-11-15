@@ -5,10 +5,8 @@ import CustomDatePicker from './CustomDatePicker';
 import NavbarBreadcrumbs from './NavbarBreadcrumbs';
 import MenuButton from './MenuButton';
 import ColorModeIconDropdown from '.././theme/ColorModeIconDropdown';
+export default function Header({ breadcrumbComponent }) {
 
-import Search from './Search';
-
-export default function Header() {
   return (
     <Stack
       direction="row"
@@ -22,7 +20,7 @@ export default function Header() {
       }}
       spacing={2}
     >
-      <NavbarBreadcrumbs />
+      <NavbarBreadcrumbs   breadcrumbComponent={breadcrumbComponent}/>
       <Stack direction="row" sx={{ gap: 1 }}>
    
         <CustomDatePicker />

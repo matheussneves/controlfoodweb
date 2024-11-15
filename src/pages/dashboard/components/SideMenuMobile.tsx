@@ -17,7 +17,7 @@ interface SideMenuMobileProps {
   toggleDrawer: (newOpen: boolean) => () => void;
 }
 
-export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
+export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps, { setSelectedComponent }) {
 
   return (
     <Drawer
@@ -59,7 +59,7 @@ export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobilePro
         </Stack>
         <Divider />
         <Stack sx={{ flexGrow: 1 }}>
-          <MenuContent />
+          <MenuContent setSelectedComponent={setSelectedComponent}  />
           <Divider />
         </Stack>
         <CardAlert />

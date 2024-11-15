@@ -11,7 +11,7 @@ import {
   DateValidationError,
   FieldSection,
 } from '@mui/x-date-pickers/models';
-
+const date = new Date();
 interface ButtonFieldProps
   extends UseDateFieldProps<Dayjs, false>,
     BaseSingleInputFieldProps<
@@ -52,7 +52,8 @@ function ButtonField(props: ButtonFieldProps) {
 }
 
 export default function CustomDatePicker() {
-  const [value, setValue] = React.useState<Dayjs | null>(dayjs('2024-11-15'));
+  const [value, setValue] = React.useState<Dayjs | null>(dayjs(`${date.getFullYear()}-${1+date.getMonth()}-${date.getDate()}`));
+  console.log(date.getDate())
   const [open, setOpen] = React.useState(false);
 
   return (

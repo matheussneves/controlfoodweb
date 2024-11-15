@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box, Typography, TextField, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-//import { createPedido, getPedidos, getPedidoById, updatePedido, deletePedido } from '../../../../apis/requests'; // Importa as funções de API
+import { createPedido, getPedidos, getPedidoById, updatePedido, deletePedido } from '../../../../apis/requests'; // Importa as funções de API
 
 function PedidosPage() {
   const [pedidos, setPedidos] = useState([]);

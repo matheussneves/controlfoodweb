@@ -58,10 +58,6 @@ export default function SessionsChart() {
               gap: 1,
             }}
           >
-            <Typography variant="h4" component="p">
-              13,277
-            </Typography>
-           
           </Stack>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
           Estatísticas de pedidos

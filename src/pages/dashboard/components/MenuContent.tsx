@@ -1,3 +1,4 @@
+// MenuContent.js
 import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -9,6 +10,7 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import AnalyticsRoundedIcon from '@mui/icons-material/AnalyticsRounded';
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
+
 
 const mainListItems = [
   { text: 'Home', icon: <HomeRoundedIcon />, component: 'MainGrid' },
@@ -25,13 +27,17 @@ const secondaryListItems = [
   { text: 'Entregadores', icon: <AssignmentRoundedIcon />, component: 'EntregadoresPage' },
 ];
 
-export default function MenuContent({ onSelectComponent }) {
+export default function MenuContent({ setSelectedComponent}) {
+  const handleMenuClick = (item) => {
+    setSelectedComponent(item.text);
+
+  };
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
       <List dense>
         {mainListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton selected={index === 0} onClick={() => onSelectComponent(item.component)}>
+            <ListItemButton onClick={() => handleMenuClick(item)}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
@@ -42,7 +48,7 @@ export default function MenuContent({ onSelectComponent }) {
       <List dense>
         {secondaryListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton onClick={() => console.log(item.component)}>
+            <ListItemButton onClick={() => handleMenuClick(item)}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>

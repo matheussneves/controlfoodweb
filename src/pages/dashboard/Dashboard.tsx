@@ -1,3 +1,4 @@
+// Dashboard.js
 import * as React from 'react';
 import { alpha } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -8,7 +9,7 @@ import Header from './components/Header';
 import MainGrid from './components/MainGrid';
 import SideMenu from './components/SideMenu';
 import AppTheme from './theme/AppTheme';
-import PagePedidos from './components/miniPage/PagePedidos'; // Novo componente exemplo
+import PagePedidos from './components/miniPage/PagePedidos';
 import EntregasPage from './components/miniPage/EntregasPage';
 import PratosPage from './components/miniPage/PratosPage';
 import EstoquePage from './components/miniPage/EstoquePage';
@@ -16,6 +17,7 @@ import IngredientesPage from './components/miniPage/IngredientesPage';
 import ClientesPage from './components/miniPage/ClientesPage';
 import UserPage from './components/miniPage/UserPage';
 import EntregadoresPage from './components/miniPage/EntregadoresPage';
+
 import {
   chartsCustomizations,
   dataGridCustomizations,
@@ -35,22 +37,22 @@ export default function Dashboard(props) {
 
   const renderComponent = () => {
     switch (selectedComponent) {
-      case 'PagePedidos':
+      case 'Pedidos':
         return <PagePedidos />;
-       case 'EntregasPage':
-         return <EntregasPage />;
-       case 'PratosPage':
-         return <PratosPage />;
-       case 'EstoquePage':
-         return <EstoquePage />;
-       case 'IngredientesPage':
-         return <IngredientesPage />;
-       case 'ClientesPage':
-         return <ClientesPage />;
-       case 'UserPage':
-         return <UserPage />;
-       case 'EntregadoresPage':
-         return <EntregadoresPage />;
+      case 'Entrega':
+        return <EntregasPage />;
+      case 'Pratos':
+        return <PratosPage />;
+      case 'Estoque':
+        return <EstoquePage />;
+      case 'Ingredientes':
+        return <IngredientesPage />;
+      case 'Clientes':
+        return <ClientesPage />;
+      case 'Usuarios':
+        return <UserPage />;
+      case 'Entregadores':
+        return <EntregadoresPage />;
       default:
         return <MainGrid />;
     }
@@ -60,7 +62,7 @@ export default function Dashboard(props) {
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: 'flex' }}>
-        <SideMenu />
+        <SideMenu setSelectedComponent={setSelectedComponent} /> {/* Passa o setSelectedComponent como prop */}
         <AppNavbar />
 
         {/* Conteúdo principal dinâmico */}
@@ -83,8 +85,8 @@ export default function Dashboard(props) {
               mt: { xs: 8, md: 0 },
             }}
           >
-            <Header />
-         {renderComponent()}
+            <Header breadcrumbComponent={selectedComponent}  />
+            {renderComponent()}
           </Stack>
         </Box>
       </Box>
