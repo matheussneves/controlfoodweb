@@ -20,7 +20,7 @@ function AreaGradient({ color, id }: { color: string; id: string }) {
 
 function getDaysInMonth(month: number, year: number) {
   const date = new Date(year, month, 0);
-  const monthName = date.toLocaleDateString('en-US', {
+  const monthName = date.toLocaleDateString('pt-br', {
     month: 'short',
   });
   const daysInMonth = date.getDate();
@@ -35,7 +35,7 @@ function getDaysInMonth(month: number, year: number) {
 
 export default function SessionsChart() {
   const theme = useTheme();
-  const data = getDaysInMonth(4, 2024);
+  const data = getDaysInMonth(11, 2024);
 
   const colorPalette = [
     theme.palette.primary.light,
@@ -47,7 +47,7 @@ export default function SessionsChart() {
     <Card variant="outlined" sx={{ width: '100%' }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
-          Sessions
+          Pedidos
         </Typography>
         <Stack sx={{ justifyContent: 'space-between' }}>
           <Stack
@@ -61,10 +61,10 @@ export default function SessionsChart() {
             <Typography variant="h4" component="p">
               13,277
             </Typography>
-            <Chip size="small" color="success" label="+35%" />
+           
           </Stack>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            Sessions per day for the last 30 days
+          Estatísticas de pedidos
           </Typography>
         </Stack>
         <LineChart
@@ -79,7 +79,7 @@ export default function SessionsChart() {
           series={[
             {
               id: 'direct',
-              label: 'Direct',
+              label: 'No prazo',
               showMark: false,
               curve: 'linear',
               stack: 'total',
@@ -93,7 +93,7 @@ export default function SessionsChart() {
             },
             {
               id: 'referral',
-              label: 'Referral',
+              label: 'Em atraso',
               showMark: false,
               curve: 'linear',
               stack: 'total',
@@ -107,7 +107,7 @@ export default function SessionsChart() {
             },
             {
               id: 'organic',
-              label: 'Organic',
+              label: 'Cancelado',
               showMark: false,
               curve: 'linear',
               stack: 'total',

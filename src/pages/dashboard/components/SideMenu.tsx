@@ -63,10 +63,10 @@ export default function SideMenu() {
         />
         <Box sx={{ mr: 'auto' }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-            Riley Carter
+            Larissa Carter
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            riley@email.com
+            larissa@gmail.com
           </Typography>
         </Box>
         <OptionsMenu />
