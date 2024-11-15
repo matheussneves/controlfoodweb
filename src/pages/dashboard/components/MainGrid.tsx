@@ -63,9 +63,7 @@ export default function MainGrid() {
             <StatCard {...card} />
           </Grid>
         ))}
-        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <HighlightedCard />
-        </Grid>
+        
         <Grid size={{ xs: 12, md: 6 }}>
           <SessionsChart />
         </Grid>
