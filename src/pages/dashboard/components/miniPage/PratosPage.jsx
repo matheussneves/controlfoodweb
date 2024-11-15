@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box, Typography, TextField, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { createPrato, getPratos, getPratoById, updatePrato, deletePrato } from '../../../../../apis/requests'; // Importa as funções de API para pratos
+import { createPrato, getPratos, getPratoById, updatePrato, deletePrato } from '../../../../apis/requests'; // Importa as funções de API para pratos
 
 function PratosPage() {
   const [pratos, setPratos] = useState([]);

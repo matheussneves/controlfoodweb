@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box, Grid, Typography, CircularProgress, Snackbar, TextField, Button, List, ListItem, ListItemText, ListItemButton, ListItemIcon, IconButton, Alert } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { getDeliverers, createDeliverer, updateDeliverer, deleteDeliverer } from '../../../../../apis/requests'; // Certifique-se de que essas funções estão definidas corretamente.
+//import { getDeliverers, createDeliverer, updateDeliverer, deleteDeliverer } from '../../../../apis/requests'; // Certifique-se de que essas funções estão definidas corretamente.
 
 const EntregadoresPage = () => {
   const [deliverers, setDeliverers] = useState([]);

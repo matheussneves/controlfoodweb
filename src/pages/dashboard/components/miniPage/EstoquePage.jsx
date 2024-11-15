@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box, Typography, TextField, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { createEstoque, getEstoques, getEstoqueById, updateEstoque, deleteEstoque } from '../../../../../apis/requests'; // Importa as funções de API para estoque
+import { createEstoque, getEstoques, getEstoqueById, updateEstoque, deleteEstoque } from '../../../../apis/requests'; // Importa as funções de API para estoque
 
 function EstoquePage() {
   const [estoques, setEstoques] = useState([]);

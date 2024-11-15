@@ -8,13 +8,13 @@ import Header from './components/Header';
 import MainGrid from './components/MainGrid';
 import SideMenu from './components/SideMenu';
 import AppTheme from './theme/AppTheme';
-import PagePedidos from './components/PagePedidos'; // Novo componente exemplo
+import PagePedidos from './components/miniPage/PagePedidos'; // Novo componente exemplo
 import EntregasPage from './components/miniPage/EntregasPage';
 import PratosPage from './components/miniPage/PratosPage';
 import EstoquePage from './components/miniPage/EstoquePage';
-import IngredientesPage from './components/IngredientesPage';
+import IngredientesPage from './components/miniPage/IngredientesPage';
 import ClientesPage from './components/miniPage/ClientesPage';
-import UserPage from './components/UserPage';
+import UserPage from './components/miniPage/UserPage';
 import EntregadoresPage from './components/miniPage/EntregadoresPage';
 import {
   chartsCustomizations,
@@ -35,22 +35,22 @@ export default function Dashboard(props) {
 
   const renderComponent = () => {
     switch (selectedComponent) {
-      //case 'PagePedidos':
-      //  return <PagePedidos />;
+      case 'PagePedidos':
+        return <PagePedidos />;
        case 'EntregasPage':
          return <EntregasPage />;
-      // case 'PratosPage':
-      //   return <PratosPage />;
-      // case 'EstoquePage':
-      //   return <EstoquePage />;
-      // case 'IngredientesPage':
-      //   return <IngredientesPage />;
-      // case 'ClientesPage':
-      //   return <ClientesPage />;
-      // case 'UserPage':
-      //   return <UserPage />;
-      // case 'EntregadoresPage':
-      //   return <EntregadoresPage />;
+       case 'PratosPage':
+         return <PratosPage />;
+       case 'EstoquePage':
+         return <EstoquePage />;
+       case 'IngredientesPage':
+         return <IngredientesPage />;
+       case 'ClientesPage':
+         return <ClientesPage />;
+       case 'UserPage':
+         return <UserPage />;
+       case 'EntregadoresPage':
+         return <EntregadoresPage />;
       default:
         return <MainGrid />;
     }

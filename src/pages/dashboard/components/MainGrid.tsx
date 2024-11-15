@@ -14,18 +14,18 @@ import StatCard, { StatCardProps } from './StatCard';
 
 const data: StatCardProps[] = [
   {
-    title: 'Users',
-    value: '14k',
-    interval: 'Last 30 days',
+    title: 'Quantidade de pedidos',
+    value: '600',
+    interval: 'Ultimos 30 dias',
     trend: 'up',
     data: [
-      200, 24, 220, 260, 240, 380, 100, 240, 280, 240, 300, 340, 320, 360, 340, 380,
-      360, 400, 380, 420, 400, 640, 340, 460, 440, 480, 460, 600, 880, 920,
+      20, 24, 22, 26, 24, 38, 10, 24, 28, 24, 30, 34, 32, 36, 34, 38,
+      36, 40, 38, 42, 40, 64, 34, 46, 44, 48, 46, 60, 88, 92,
     ],
   },
   {
-    title: 'Conversions',
-    value: '325',
+    title: 'Arrecadaçao',
+    value: '17000',
     interval: 'Last 30 days',
     trend: 'down',
     data: [
@@ -50,7 +50,7 @@ export default function MainGrid() {
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
       {/* cards */}
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Overview
+      Dashboard
       </Typography>
       <Grid
         container

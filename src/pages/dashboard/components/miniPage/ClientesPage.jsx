@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  createCliente, 
-  getClientes, 
-  getClienteById, 
-  updateCliente, 
-  deleteCliente 
-} from '../../../../../apis/requests'; // Importa as funções de API para clientes
+import { createCliente, getClientes, getClienteById, updateCliente, deleteCliente } from '../../../../apis/requests'; // Importa as funções de API para clientes
 import { Container, Box, Grid, Typography, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Snackbar, Alert } from '@mui/material';
 
 function ClientesPage() {

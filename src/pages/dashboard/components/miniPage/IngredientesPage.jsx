@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box, Typography, TextField, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { createIngrediente, getIngredientes, getIngredienteById, updateIngrediente, deleteIngrediente } from '../../../../apis/requests'; // Importa as funções de API para ingredientes
+//import { createIngrediente, getIngredientes, getIngredienteById, updateIngrediente, deleteIngrediente } from '../../../../apis/requests'; // Importa as funções de API para ingredientes
 
 function IngredientesPage() {
   const [ingredientes, setIngredientes] = useState([]);
