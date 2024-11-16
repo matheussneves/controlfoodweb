@@ -1,7 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Grid, Typography, CircularProgress, Snackbar, TextField, Button, List, ListItem, ListItemText, ListItemButton, ListItemIcon, IconButton, Alert } from '@mui/material';
+import { 
+  Container, 
+  Box, 
+  Grid, 
+  Typography, 
+  CircularProgress, 
+  Snackbar, 
+  TextField, 
+  Button, 
+  List, 
+  ListItem, 
+  ListItemText, 
+  IconButton, 
+  Alert 
+} from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { getDeliverers, createDeliverer, getIngredientById, updateDeliverer, deleteDeliverer } from '../../../../apis/requests'; // Certifique-se de que essas funções estão definidas corretamente.
+import { 
+  getDeliverers, 
+  createDeliverer, 
+  updateDeliverer, 
+  deleteDeliverer 
+} from '../../../../apis/requests';
 
 const EntregadoresPage = () => {
   const [deliverers, setDeliverers] = useState([]);
@@ -17,7 +36,7 @@ const EntregadoresPage = () => {
         const data = await getDeliverers();
         setDeliverers(data);
       } catch (error) {
-        setError('Failed to fetch deliverers');
+        setError('Falha ao buscar entregadores.');
       } finally {
         setLoading(false);
       }
@@ -33,25 +52,25 @@ const EntregadoresPage = () => {
       } else {
         await createDeliverer(delivererData);
       }
-      setSuccess('Deliverer saved successfully');
+      setSuccess('Entregador salvo com sucesso.');
       setDeliverers(await getDeliverers());
       setSelectedDeliverer(null);
     } catch (error) {
-      setError('Failed to save deliverer');
+      setError('Falha ao salvar o entregador.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (delivererId) => {
-    if (window.confirm('Are you sure you want to delete this deliverer?')) {
+    if (window.confirm('Você tem certeza que deseja excluir este entregador?')) {
       setLoading(true);
       try {
         await deleteDeliverer(delivererId);
-        setSuccess('Deliverer deleted successfully');
+        setSuccess('Entregador excluído com sucesso.');
         setDeliverers(await getDeliverers());
       } catch (error) {
-        setError('Failed to delete deliverer');
+        setError('Falha ao excluir o entregador.');
       } finally {
         setLoading(false);
       }
@@ -62,11 +81,11 @@ const EntregadoresPage = () => {
     <Container>
       <Box my={4}>
         <Typography variant="h4" gutterBottom>
-          Deliverer Management
+          Gestão de Entregadores
         </Typography>
       </Box>
 
-      {/* Snackbar for Error and Success */}
+      {/* Notificações */}
       {error && (
         <Snackbar open={true} autoHideDuration={6000}>
           <Alert severity="error">{error}</Alert>
@@ -99,74 +118,101 @@ const EntregadoresPage = () => {
 };
 
 const DelivererForm = ({ selectedDeliverer, onSave }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [vehicle, setVehicle] = useState('');
+  const [nome, setNome] = useState('');
+  const [senha, setSenha] = useState('');
+  const [telefone, setTelefone] = useState('');
+  const [veiculo, setVeiculo] = useState('');
+  const [placa, setPlaca] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (selectedDeliverer) {
-      setName(selectedDeliverer.name);
-      setEmail(selectedDeliverer.email);
-      setVehicle(selectedDeliverer.vehicle);
+      setNome(selectedDeliverer.nome || '');
+      setSenha(selectedDeliverer.senha || '');
+      setTelefone(selectedDeliverer.telefone || '');
+      setVeiculo(selectedDeliverer.veiculo || '');
+      setPlaca(selectedDeliverer.placa || '');
     } else {
-      setName('');
-      setEmail('');
-      setVehicle('');
+      setNome('');
+      setSenha('');
+      setTelefone('');
+      setVeiculo('');
+      setPlaca('');
     }
   }, [selectedDeliverer]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const delivererData = { name, email, vehicle };
+    const delivererData = { nome, senha, telefone, veiculo, placa };
     await onSave(delivererData);
     setLoading(false);
   };
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ padding: 2, border: '1px solid #ddd', borderRadius: 2 }}>
-      <Typography variant="h6">{selectedDeliverer ? 'Edit Deliverer' : 'Add New Deliverer'}</Typography>
+      <Typography variant="h6">
+        {selectedDeliverer ? 'Editar Entregador' : 'Adicionar Novo Entregador'}
+      </Typography>
       <TextField
-        label="Name"
+        label="Nome"
         fullWidth
-        value={name}
-        onChange={(e) => setName(e.target.value)}
+        value={nome}
+        onChange={(e) => setNome(e.target.value)}
         sx={{ mb: 2 }}
         required
       />
       <TextField
-        label="Email"
+        label="senha"
         fullWidth
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        value={''}
+        onChange={(e) => setSenha(e.target.value)}
         sx={{ mb: 2 }}
         required
-        type="email"
+        type="senha"
       />
       <TextField
-        label="Vehicle"
+        label="Telefone"
         fullWidth
-        value={vehicle}
-        onChange={(e) => setVehicle(e.target.value)}
+        value={telefone}
+        onChange={(e) => setTelefone(e.target.value)}
+        sx={{ mb: 2 }}
+        required
+      />
+      <TextField
+        label="Veículo"
+        fullWidth
+        value={veiculo}
+        onChange={(e) => setVeiculo(e.target.value)}
+        sx={{ mb: 2 }}
+        required
+      />
+      <TextField
+        label="Placa"
+        fullWidth
+        value={placa}
+        onChange={(e) => setPlaca(e.target.value)}
         sx={{ mb: 2 }}
         required
       />
       <Button type="submit" variant="contained" color="primary" disabled={loading}>
-        {loading ? 'Saving...' : 'Save'}
+        {loading ? 'Salvando...' : 'Salvar'}
       </Button>
     </Box>
   );
 };
 
 const DelivererList = ({ deliverers, onEdit, onDelete }) => {
-  if (!deliverers.length) return <Typography>No deliverers found</Typography>;
+  if (!deliverers.length) return <Typography>Nenhum entregador encontrado.</Typography>;
 
   return (
     <List>
       {deliverers.map((deliverer) => (
         <ListItem key={deliverer.id} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <ListItemText primary={deliverer.name} secondary={deliverer.email} />
+          <ListItemText
+            primary={`${deliverer.nome} (${deliverer.veiculo} - ${deliverer.placa})`}
+            secondary={`${deliverer.telefone}`}
+          />
           <Box>
             <IconButton onClick={() => onEdit(deliverer)}>
               <Edit />

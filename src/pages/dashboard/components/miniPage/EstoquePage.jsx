@@ -1,20 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Typography, TextField, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Snackbar, Alert, CircularProgress } from '@mui/material';
+import {
+  Container,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+  Snackbar,
+  Alert,
+  CircularProgress,
+  MenuItem,
+} from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { createEstoque, getEstoques, getEstoqueById, updateEstoque, deleteEstoque } from '../../../../apis/requests'; // Importa as funções de API para estoque
+import {
+  createEstoque,
+  getEstoques,
+  getEstoqueById,
+  updateEstoque,
+  deleteEstoque,
+  getIngredientes,
+} from '../../../../apis/requests';
 
 function EstoquePage() {
   const [estoques, setEstoques] = useState([]);
-  const [estoqueAtual, setEstoqueAtual] = useState({ item: '', quantidade: '', preco: '' });
+  const [ingredientes, setIngredientes] = useState([]);
+  const [estoqueAtual, setEstoqueAtual] = useState({
+    ingrediente_Id_ingrediente: '',
+    quantidade: '',
+    medida: '',
+    quantidade_minima: '',
+  });
   const [modoEdicao, setModoEdicao] = useState(false);
   const [estoqueId, setEstoqueId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Função para carregar o estoque
   useEffect(() => {
     carregarEstoques();
+    carregarIngredientes();
   }, []);
 
   const carregarEstoques = async () => {
@@ -29,7 +60,15 @@ function EstoquePage() {
     }
   };
 
-  // Função para lidar com a submissão do formulário de novo item de estoque
+  const carregarIngredientes = async () => {
+    try {
+      const data = await getIngredientes();
+      setIngredientes(data);
+    } catch (error) {
+      setError('Erro ao carregar ingredientes');
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -40,7 +79,7 @@ function EstoquePage() {
         await createEstoque(estoqueAtual);
       }
       setSuccess(modoEdicao ? 'Item atualizado com sucesso' : 'Item adicionado com sucesso');
-      setEstoqueAtual({ item: '', quantidade: '', preco: '' });
+      setEstoqueAtual({ ingrediente_Id_ingrediente: '', quantidade: '', medida: '', quantidade_minima: '' });
       setModoEdicao(false);
       setEstoqueId(null);
       carregarEstoques();
@@ -51,7 +90,6 @@ function EstoquePage() {
     }
   };
 
-  // Função para editar um item de estoque
   const handleEdit = async (id) => {
     setLoading(true);
     try {
@@ -66,7 +104,6 @@ function EstoquePage() {
     }
   };
 
-  // Função para excluir um item de estoque
   const handleDelete = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este item?')) {
       setLoading(true);
@@ -82,10 +119,14 @@ function EstoquePage() {
     }
   };
 
-  // Função para lidar com mudanças no formulário
   const handleChange = (event) => {
     const { name, value } = event.target;
     setEstoqueAtual((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const getDescricaoIngrediente = (ingredienteId) => {
+    const ingrediente = ingredientes.find((ing) => ing.Id_ingrediente === ingredienteId);
+    return ingrediente ? ingrediente.descricao : 'Não encontrado';
   };
 
   return (
@@ -96,7 +137,7 @@ function EstoquePage() {
         </Typography>
       </Box>
 
-      {/* Snackbar for Error and Success */}
+      {/* Snackbar para erros e sucesso */}
       {error && (
         <Snackbar open={true} autoHideDuration={6000}>
           <Alert severity="error">{error}</Alert>
@@ -111,17 +152,24 @@ function EstoquePage() {
       {/* Formulário de Adicionar/Editar Estoque */}
       <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={6}>
             <TextField
-              label="Item"
-              name="item"
-              value={estoqueAtual.item}
+              select
+              label="Ingrediente"
+              name="ingrediente_Id_ingrediente"
+              value={estoqueAtual.ingrediente_Id_ingrediente}
               onChange={handleChange}
               fullWidth
               required
-            />
+            >
+              {ingredientes.map((ingrediente) => (
+                <MenuItem key={ingrediente.Id_ingrediente} value={ingrediente.Id_ingrediente}>
+                  {ingrediente.descricao}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={3}>
             <TextField
               label="Quantidade"
               name="quantidade"
@@ -132,12 +180,22 @@ function EstoquePage() {
               required
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={3}>
             <TextField
-              label="Preço"
-              name="preco"
+              label="Medida"
+              name="medida"
+              value={estoqueAtual.medida}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <TextField
+              label="Quantidade Mínima"
+              name="quantidade_minima"
               type="number"
-              value={estoqueAtual.preco}
+              value={estoqueAtual.quantidade_minima}
               onChange={handleChange}
               fullWidth
               required
@@ -146,7 +204,7 @@ function EstoquePage() {
         </Grid>
         <Box mt={2}>
           <Button type="submit" variant="contained" color="primary" disabled={loading}>
-            {loading ? <CircularProgress size={24} /> : (modoEdicao ? 'Atualizar Item' : 'Adicionar Item')}
+            {loading ? <CircularProgress size={24} /> : modoEdicao ? 'Atualizar Item' : 'Adicionar Item'}
           </Button>
         </Box>
       </Box>
@@ -162,18 +220,20 @@ function EstoquePage() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Item</TableCell>
+                <TableCell>Descrição</TableCell>
                 <TableCell>Quantidade</TableCell>
-                <TableCell>Preço</TableCell>
+                <TableCell>Medida</TableCell>
+                <TableCell>Quantidade Mínima</TableCell>
                 <TableCell>Ações</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {estoques.map((estoque) => (
                 <TableRow key={estoque.id_estoque}>
-                  <TableCell>{estoque.item}</TableCell>
+                  <TableCell>{getDescricaoIngrediente(estoque.ingrediente_Id_ingrediente)}</TableCell>
                   <TableCell>{estoque.quantidade}</TableCell>
-                  <TableCell>{estoque.preco}</TableCell>
+                  <TableCell>{estoque.medida}</TableCell>
+                  <TableCell>{estoque.quantidade_minima}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEdit(estoque.id_estoque)}>
                       <Edit />

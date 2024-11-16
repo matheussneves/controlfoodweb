@@ -177,23 +177,23 @@ export function createEntrega(data) {
 }
 
 export function getEntregas() {
-  return apiRequest('/entrega', 'GET');
+  return apiRequest('/entregas', 'GET');
 }
 
 export function getEntregaById(id) {
-  return apiRequest(`/entrega/${id}`, 'GET');
+  return apiRequest(`/entregas/${id}`, 'GET');
 }
 
 export function updateEntrega(id, data) {
-  return apiRequest(`/entrega/${id}`, 'PUT', data);
+  return apiRequest(`/entregas/${id}`, 'PUT', data);
 }
 
 export function deleteEntrega(id) {
-  return apiRequest(`/entrega/${id}`, 'DELETE');
+  return apiRequest(`/entregas/${id}`, 'DELETE');
 }
 
 export function createPedido(data) {
-  return apiRequest('/entrega', 'POST', data);
+  return apiRequest('/pedidos', 'POST', data);
 }
 
 export function getPedidos() {

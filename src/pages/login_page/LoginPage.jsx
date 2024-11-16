@@ -4,12 +4,14 @@ import { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Alert } from '@mui/material';
 import { loginApi } from '../../apis/requests';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../../apis/AuthContext';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const { setUserId } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -29,6 +31,7 @@ function LoginPage() {
 
       setSuccess('Login realizado com sucesso!');
       setError('');
+      setUserId(data.id); 
       (data.autorizado ) ? navigate("/Home") : setError("Senha ou email invalido!");
     } catch (error) {
       console.log(error)

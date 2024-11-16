@@ -5,7 +5,7 @@ import { createPrato, getPratos, getPratoById, updatePrato, deletePrato } from '
 
 function PratosPage() {
   const [pratos, setPratos] = useState([]);
-  const [pratoAtual, setPratoAtual] = useState({ nome: '', descricao: '', preco: '' });
+  const [pratoAtual, setPratoAtual] = useState({ nome: '', descricao: '', preco: '', tempo: '' });
   const [modoEdicao, setModoEdicao] = useState(false);
   const [pratoId, setPratoId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -40,7 +40,7 @@ function PratosPage() {
         await createPrato(pratoAtual);
       }
       setSuccess(modoEdicao ? 'Prato atualizado com sucesso' : 'Prato adicionado com sucesso');
-      setPratoAtual({ nome: '', descricao: '', preco: '' });
+      setPratoAtual({ nome: '', descricao: '', preco: '', tempo: '' });
       setModoEdicao(false);
       setPratoId(null);
       carregarPratos();
@@ -142,6 +142,17 @@ function PratosPage() {
               required
             />
           </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="Tempo de Preparo"
+              name="tempo"
+              type="number"
+              value={pratoAtual.tempo}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+          </Grid>
         </Grid>
         <Box mt={2}>
           <Button type="submit" variant="contained" color="primary" disabled={loading}>
@@ -164,6 +175,7 @@ function PratosPage() {
                 <TableCell>Nome</TableCell>
                 <TableCell>Descrição</TableCell>
                 <TableCell>Preço</TableCell>
+                <TableCell>Tempo de Preparo</TableCell>
                 <TableCell>Ações</TableCell>
               </TableRow>
             </TableHead>
@@ -173,6 +185,7 @@ function PratosPage() {
                   <TableCell>{prato.nome}</TableCell>
                   <TableCell>{prato.descricao}</TableCell>
                   <TableCell>{prato.preco}</TableCell>
+                  <TableCell>{prato.tempo} min</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEdit(prato.id_prato)}>
                       <Edit />

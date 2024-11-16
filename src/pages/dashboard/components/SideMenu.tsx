@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
 import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import MenuContent from './MenuContent';
 import CardAlert from './CardAlert';
 import OptionsMenu from './OptionsMenu';
+import { getUserById } from '../../../apis/requests';
 
 const drawerWidth = 240;
 
@@ -23,7 +24,29 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
-export default function SideMenu({ setSelectedComponent }) {
+export default function SideMenu({ userid, setSelectedComponent }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        if (userid) {
+          const response = await getUserById(userid); // Chama a API para obter os dados do usuário
+          setUser(response); // Define os dados do usuário no estado
+        }
+      } catch (error) {
+        setUser(error)
+        console.error('Erro ao buscar dados do usuário:', error);
+      }
+    };
+
+    fetchUser();
+  }, [userid]);
+
+
+
+
+
   return (
     <Drawer
       variant="permanent"
@@ -57,16 +80,16 @@ export default function SideMenu({ setSelectedComponent }) {
       >
         <Avatar
           sizes="small"
-          alt="Riley Carter"
+          alt={user?.nome || 'Usuário'}
           src="/static/images/avatar/7.jpg"
           sx={{ width: 36, height: 36 }}
         />
         <Box sx={{ mr: 'auto' }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-            Larissa Carter
+          {user?.nome || 'Carregando...'} {/* Nome dinâmico do usuário */}
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            larissa@gmail.com
+          {user?.email || 'Carregando...'} {/* Email dinâmico do usuário */}
           </Typography>
         </Box>
         <OptionsMenu />

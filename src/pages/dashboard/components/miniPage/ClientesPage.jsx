@@ -4,7 +4,7 @@ import { Container, Box, Grid, Typography, TextField, Button, Table, TableBody, 
 
 function ClientesPage() {
   const [clientes, setClientes] = useState([]);
-  const [clienteAtual, setClienteAtual] = useState({ nome: '', email: '', telefone: '' });
+  const [clienteAtual, setClienteAtual] = useState({ nome: '', telefone: '' , endereco: '' });
   const [modoEdicao, setModoEdicao] = useState(false);
   const [clienteId, setClienteId] = useState(null);
   const [error, setError] = useState('');
@@ -36,12 +36,12 @@ function ClientesPage() {
         await createCliente(clienteAtual);
         setSuccess('Cliente criado com sucesso!');
       }
-      setClienteAtual({ nome: '', email: '', telefone: '' });
+      setClienteAtual({ nome: '', endereco: '', telefone: '' });
       setModoEdicao(false);
       setClienteId(null);
       carregarClientes();
     } catch (error) {
-      setError('Erro ao salvar cliente.');
+      setError('Erro ao salvar cliente:' + JSON.stringify(clienteAtual));
     }
   };
 
@@ -81,7 +81,7 @@ function ClientesPage() {
 
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={18} md={6}>
               <TextField
                 label="Nome"
                 name="nome"
@@ -91,18 +91,8 @@ function ClientesPage() {
                 required
               />
             </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Email"
-                name="email"
-                value={clienteAtual.email}
-                onChange={handleChange}
-                fullWidth
-                required
-                type="email"
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
+           
+            <Grid item xs={18} md={6}>
               <TextField
                 label="Telefone"
                 name="telefone"
@@ -110,6 +100,17 @@ function ClientesPage() {
                 onChange={handleChange}
                 fullWidth
                 required
+              />
+            </Grid>
+            <Grid item xs={39} md={13}>
+              <TextField
+                label="Endereco"
+                name="endereco"
+                value={clienteAtual.endereco}
+                onChange={handleChange}
+                fullWidth
+                required
+                type="endereco"
               />
             </Grid>
           </Grid>
@@ -131,7 +132,7 @@ function ClientesPage() {
               <TableHead>
                 <TableRow>
                   <TableCell>Nome</TableCell>
-                  <TableCell>Email</TableCell>
+                  <TableCell>Endereco</TableCell>
                   <TableCell>Telefone</TableCell>
                   <TableCell>Ações</TableCell>
                 </TableRow>
@@ -140,7 +141,7 @@ function ClientesPage() {
                 {clientes.map((cliente) => (
                   <TableRow key={cliente.id_cliente}>
                     <TableCell>{cliente.nome}</TableCell>
-                    <TableCell>{cliente.email}</TableCell>
+                    <TableCell>{cliente.endereco}</TableCell>
                     <TableCell>{cliente.telefone}</TableCell>
                     <TableCell>
                       <Button

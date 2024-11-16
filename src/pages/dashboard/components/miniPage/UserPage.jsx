@@ -1,7 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Grid, Typography, CircularProgress, Snackbar, TextField, Button, List, ListItem, ListItemText, ListItemButton, ListItemIcon, IconButton } from '@mui/material';
+import {
+  Container,
+  Box,
+  Grid,
+  Typography,
+  CircularProgress,
+  Snackbar,
+  TextField,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Alert,
+  FormControlLabel,
+  Checkbox,
+} from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { Alert } from '@mui/material';
 import { getUsers, createUser, updateUser, deleteUser } from '../../../../apis/requests'; // Certifique-se de que essas funções estão definidas corretamente.
 
 const UserPage = () => {
@@ -18,7 +33,7 @@ const UserPage = () => {
         const data = await getUsers();
         setUsers(data);
       } catch (error) {
-        setError('Failed to fetch users');
+        setError('Falha ao buscar usuários.');
       } finally {
         setLoading(false);
       }
@@ -34,25 +49,25 @@ const UserPage = () => {
       } else {
         await createUser(userData);
       }
-      setSuccess('User saved successfully');
+      setSuccess('Usuário salvo com sucesso.');
       setUsers(await getUsers());
       setSelectedUser(null);
     } catch (error) {
-      setError('Failed to save user');
+      setError('Falha ao salvar o usuário.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (userId) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+    if (window.confirm('Você tem certeza que deseja excluir este usuário?')) {
       setLoading(true);
       try {
         await deleteUser(userId);
-        setSuccess('User deleted successfully');
+        setSuccess('Usuário excluído com sucesso.');
         setUsers(await getUsers());
       } catch (error) {
-        setError('Failed to delete user');
+        setError('Falha ao excluir o usuário.');
       } finally {
         setLoading(false);
       }
@@ -62,10 +77,10 @@ const UserPage = () => {
   return (
     <Container>
       <Box my={4}>
-        <Typography variant="h4">User Management</Typography>
+        <Typography variant="h4">Gerenciamento de Usuários</Typography>
       </Box>
 
-      {/* Snackbar para feedback de erro ou sucesso */}
+      {/* Feedback de erro e sucesso */}
       {error && <Snackbar open={true} autoHideDuration={6000}><Alert severity="error">{error}</Alert></Snackbar>}
       {success && <Snackbar open={true} autoHideDuration={6000}><Alert severity="success">{success}</Alert></Snackbar>}
 
@@ -91,39 +106,59 @@ const UserPage = () => {
 };
 
 const UserForm = ({ selectedUser, onSave }) => {
-  const [name, setName] = useState('');
+  const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('');
+  const [senha, setSenha] = useState('');
+  const [accessCreateUser, setAccessCreateUser] = useState(false);
+  const [accessDashboard, setAccessDashboard] = useState(false);
+  const [accessCreateOrder, setAccessCreateOrder] = useState(false);
+  const [accessStock, setAccessStock] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (selectedUser) {
-      setName(selectedUser.name);
-      setEmail(selectedUser.email);
-      setRole(selectedUser.role);
+      setNome(selectedUser.nome || '');
+      setEmail(selectedUser.email || '');
+      setSenha(''); // Senha não será carregada por motivos de segurança
+      setAccessCreateUser(selectedUser.acesso_criar_usuario || false);
+      setAccessDashboard(selectedUser.acesso_dashboard || false);
+      setAccessCreateOrder(selectedUser.acesso_criar_pedido || false);
+      setAccessStock(selectedUser.acesso_estoque || false);
     } else {
-      setName('');
+      setNome('');
       setEmail('');
-      setRole('');
+      setSenha('');
+      setAccessCreateUser(false);
+      setAccessDashboard(false);
+      setAccessCreateOrder(false);
+      setAccessStock(false);
     }
   }, [selectedUser]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const userData = { name, email, role };
+    const userData = {
+      nome,
+      email,
+      senha: senha || undefined, // Senha é enviada apenas se estiver preenchida
+      acesso_criar_usuario: accessCreateUser,
+      acesso_dashboard: accessDashboard,
+      acesso_criar_pedido: accessCreateOrder,
+      acesso_estoque: accessStock,
+    };
     await onSave(userData);
     setLoading(false);
   };
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ padding: 2, border: '1px solid #ddd', borderRadius: 2 }}>
-      <Typography variant="h6">{selectedUser ? 'Edit User' : 'Add New User'}</Typography>
+      <Typography variant="h6">{selectedUser ? 'Editar Usuário' : 'Adicionar Usuário'}</Typography>
       <TextField
-        label="Name"
+        label="Nome"
         fullWidth
-        value={name}
-        onChange={(e) => setName(e.target.value)}
+        value={nome}
+        onChange={(e) => setNome(e.target.value)}
         sx={{ mb: 2 }}
         required
       />
@@ -137,28 +172,52 @@ const UserForm = ({ selectedUser, onSave }) => {
         type="email"
       />
       <TextField
-        label="Role"
+        label="Senha"
         fullWidth
-        value={role}
-        onChange={(e) => setRole(e.target.value)}
+        value={senha}
+        onChange={(e) => setSenha(e.target.value)}
         sx={{ mb: 2 }}
-        required
+        type="senha"
+      />
+      <FormControlLabel
+        control={<Checkbox checked={accessCreateUser} onChange={(e) => setAccessCreateUser(e.target.checked)} />}
+        label="Acesso: Criar Usuário"
+      />
+      <FormControlLabel
+        control={<Checkbox checked={accessDashboard} onChange={(e) => setAccessDashboard(e.target.checked)} />}
+        label="Acesso: Dashboard"
+      />
+      <FormControlLabel
+        control={<Checkbox checked={accessCreateOrder} onChange={(e) => setAccessCreateOrder(e.target.checked)} />}
+        label="Acesso: Criar Pedido"
+      />
+      <FormControlLabel
+        control={<Checkbox checked={accessStock} onChange={(e) => setAccessStock(e.target.checked)} />}
+        label="Acesso: Estoque"
       />
       <Button type="submit" variant="contained" color="primary" disabled={loading}>
-        {loading ? 'Saving...' : 'Save'}
+        {loading ? 'Salvando...' : 'Salvar'}
       </Button>
     </Box>
   );
 };
 
 const UserList = ({ users, onEdit, onDelete }) => {
-  if (!users.length) return <Typography>No users found</Typography>;
+  if (!users.length) return <Typography>Nenhum usuário encontrado.</Typography>;
 
   return (
     <List>
       {users.map((user) => (
         <ListItem key={user.id} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <ListItemText primary={user.name} secondary={user.email} />
+          <ListItemText
+            primary={user.nome}
+            secondary={`Email: ${user.email}, Permissões: ${[
+              user.acesso_criar_usuario ? 'Criar Usuário' : '',
+              user.acesso_dashboard ? 'Dashboard' : '',
+              user.acesso_criar_pedido ? 'Criar Pedido' : '',
+              user.acesso_estoque ? 'Estoque' : '',
+            ].filter(Boolean).join(', ')}`}
+          />
           <Box>
             <IconButton onClick={() => onEdit(user)}>
               <Edit />

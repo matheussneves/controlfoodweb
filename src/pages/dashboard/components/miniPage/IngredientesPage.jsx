@@ -5,7 +5,7 @@ import { createIngrediente, getIngredientes, getIngredienteById, updateIngredien
 
 function IngredientesPage() {
   const [ingredientes, setIngredientes] = useState([]);
-  const [ingredienteAtual, setIngredienteAtual] = useState({ nome: '', quantidade: '', unidade: '' });
+  const [ingredienteAtual, setIngredienteAtual] = useState({ descricao: '', contem_alergicos: '', informacoes_nutricionais: '' });
   const [modoEdicao, setModoEdicao] = useState(false);
   const [ingredienteId, setIngredienteId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -40,7 +40,7 @@ function IngredientesPage() {
         await createIngrediente(ingredienteAtual);
       }
       setSuccess(modoEdicao ? 'Ingrediente atualizado com sucesso' : 'Ingrediente adicionado com sucesso');
-      setIngredienteAtual({ nome: '', quantidade: '', unidade: '' });
+      setIngredienteAtual({ descricao: '', contem_alergicos: '', informacoes_nutricionais: '' });
       setModoEdicao(false);
       setIngredienteId(null);
       carregarIngredientes();
@@ -60,7 +60,7 @@ function IngredientesPage() {
       setModoEdicao(true);
       setIngredienteId(id);
     } catch (error) {
-      setError('Erro ao carregar ingrediente');
+      setError('Erro ao carregar ingrediente' + id);
     } finally {
       setLoading(false);
     }
@@ -113,9 +113,9 @@ function IngredientesPage() {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
             <TextField
-              label="Nome"
-              name="nome"
-              value={ingredienteAtual.nome}
+              label="Descricao"
+              name="descricao"
+              value={ingredienteAtual.descricao}
               onChange={handleChange}
               fullWidth
               required
@@ -123,10 +123,10 @@ function IngredientesPage() {
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
-              label="Quantidade"
-              name="quantidade"
+              label="Contem alergicos"
+              name="contem_alergicos"
               type="number"
-              value={ingredienteAtual.quantidade}
+              value={ingredienteAtual.contem_alergicos}
               onChange={handleChange}
               fullWidth
               required
@@ -134,9 +134,9 @@ function IngredientesPage() {
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
-              label="Unidade"
-              name="unidade"
-              value={ingredienteAtual.unidade}
+              label="Informacoes nutricionais"
+              name="informacoes_nutricionais"
+              value={ingredienteAtual.informacoes_nutricionais}
               onChange={handleChange}
               fullWidth
               required
@@ -161,23 +161,23 @@ function IngredientesPage() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Nome</TableCell>
-                <TableCell>Quantidade</TableCell>
-                <TableCell>Unidade</TableCell>
+                <TableCell>Descricao</TableCell>
+                <TableCell>Contem alergicos</TableCell>
+                <TableCell>Informações nutricionais</TableCell>
                 <TableCell>Ações</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {ingredientes.map((ingrediente) => (
-                <TableRow key={ingrediente.id_ingrediente}>
-                  <TableCell>{ingrediente.nome}</TableCell>
-                  <TableCell>{ingrediente.quantidade}</TableCell>
-                  <TableCell>{ingrediente.unidade}</TableCell>
+                <TableRow key={ingrediente.Id_ingrediente}>
+                  <TableCell>{ingrediente.descricao}</TableCell>
+                  <TableCell>{ingrediente.contem_alergicos}</TableCell>
+                  <TableCell>{ingrediente.informacoes_nutricionais}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleEdit(ingrediente.id_ingrediente)}>
+                    <IconButton onClick={() => handleEdit(ingrediente.Id_ingrediente)}>
                       <Edit />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(ingrediente.id_ingrediente)}>
+                    <IconButton onClick={() => handleDelete(ingrediente.Id_ingrediente)}>
                       <Delete />
                     </IconButton>
                   </TableCell>

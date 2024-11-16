@@ -1,20 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Typography, TextField, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Snackbar, Alert, CircularProgress } from '@mui/material';
+import {
+  Container, Box, Typography, TextField, Button, Grid,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  IconButton, Snackbar, Alert, CircularProgress, MenuItem
+} from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { createPedido, getPedidos, getPedidoById, updatePedido, deletePedido } from '../../../../apis/requests'; // Importa as funções de API
+import {
+  createPedido, getPedidos, getPedidoById, updatePedido, deletePedido, getPratos, getClientes
+} from '../../../../apis/requests'; // Importa as funções de API
+import { useAuth } from '../../../../apis/AuthContext';
 
 function PedidosPage() {
+  const { userid } = useAuth(); // Obtém o ID do usuário autenticado
   const [pedidos, setPedidos] = useState([]);
-  const [pedidoAtual, setPedidoAtual] = useState({ nome: '', descricao: '', preco: '' });
+  const [clientes, setClientes] = useState([]); // Estado para armazenar a lista de clientes
+  const [pratos, setPratos] = useState([]); // Estado para armazenar a lista de pratos
+  const [pedidoAtual, setPedidoAtual] = useState({
+    cliente_id_cliente: '',
+    entregador_id_entregador: '',
+    usuarios_id_usuario: userid, // Preenche automaticamente com o ID do usuário autenticado
+    pratos_id_prato: '',
+    data_pedido: '',
+    tempo_estimado: '',
+  });
   const [modoEdicao, setModoEdicao] = useState(false);
   const [pedidoId, setPedidoId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  
+  // Estados para filtros de busca
+  const [searchCliente, setSearchCliente] = useState('');
+  const [searchPrato, setSearchPrato] = useState('');
 
-  // Função para carregar os pedidos
   useEffect(() => {
     carregarPedidos();
+    carregarPratos();
+    carregarClientes();
   }, []);
 
   const carregarPedidos = async () => {
@@ -29,7 +51,24 @@ function PedidosPage() {
     }
   };
 
-  // Função para lidar com a submissão do formulário de novo pedido
+  const carregarPratos = async () => {
+    try {
+      const data = await getPratos();
+      setPratos(data);
+    } catch (error) {
+      setError('Erro ao carregar pratos');
+    }
+  };
+
+  const carregarClientes = async () => {
+    try {
+      const data = await getClientes();
+      setClientes(data);
+    } catch (error) {
+      setError('Erro ao carregar clientes');
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -40,7 +79,14 @@ function PedidosPage() {
         await createPedido(pedidoAtual);
       }
       setSuccess(modoEdicao ? 'Pedido atualizado com sucesso' : 'Pedido adicionado com sucesso');
-      setPedidoAtual({ nome: '', descricao: '', preco: '' });
+      setPedidoAtual({
+        cliente_id_cliente: '',
+        entregador_id_entregador: '',
+        usuarios_id_usuario: userid, // Garante que o ID do usuário autenticado seja mantido
+        pratos_id_prato: '',
+        data_pedido: '',
+        tempo_estimado: '',
+      });
       setModoEdicao(false);
       setPedidoId(null);
       carregarPedidos();
@@ -51,12 +97,14 @@ function PedidosPage() {
     }
   };
 
-  // Função para editar um pedido
   const handleEdit = async (id) => {
     setLoading(true);
     try {
       const pedido = await getPedidoById(id);
-      setPedidoAtual(pedido);
+      setPedidoAtual({
+        ...pedido,
+        usuarios_id_usuario: userid, // Garante que o ID do usuário não seja sobrescrito na edição
+      });
       setModoEdicao(true);
       setPedidoId(id);
     } catch (error) {
@@ -66,7 +114,6 @@ function PedidosPage() {
     }
   };
 
-  // Função para excluir um pedido
   const handleDelete = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este pedido?')) {
       setLoading(true);
@@ -82,11 +129,19 @@ function PedidosPage() {
     }
   };
 
-  // Função para lidar com mudanças no formulário
   const handleChange = (event) => {
     const { name, value } = event.target;
     setPedidoAtual((prev) => ({ ...prev, [name]: value }));
   };
+
+  // Filtros de busca
+  const filteredClientes = clientes.filter((cliente) =>
+    cliente.nome.toLowerCase().includes(searchCliente.toLowerCase())
+  );
+
+  const filteredPratos = pratos.filter((prato) =>
+    prato.nome.toLowerCase().includes(searchPrato.toLowerCase())
+  );
 
   return (
     <Container>
@@ -113,9 +168,32 @@ function PedidosPage() {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
             <TextField
-              label="Nome do Pedido"
-              name="nome"
-              value={pedidoAtual.nome}
+              label="Buscar Cliente"
+              value={searchCliente}
+              onChange={(e) => setSearchCliente(e.target.value)}
+              fullWidth
+            />
+            <TextField
+              select
+              label="Cliente"
+              name="cliente_id_cliente"
+              value={pedidoAtual.cliente_id_cliente}
+              onChange={handleChange}
+              fullWidth
+              required
+            >
+              {filteredClientes.map((cliente) => (
+                <MenuItem key={cliente.id_cliente} value={cliente.id_cliente}>
+                  {cliente.nome}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="Entregador ID"
+              name="entregador_id_entregador"
+              value={pedidoAtual.entregador_id_entregador}
               onChange={handleChange}
               fullWidth
               required
@@ -123,20 +201,54 @@ function PedidosPage() {
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
-              label="Descrição"
-              name="descricao"
-              value={pedidoAtual.descricao}
-              onChange={handleChange}
+              label="Usuário ID"
+              name="usuarios_id_usuario"
+              value={userid} // Exibe o valor obtido do contexto
+              disabled // Bloqueia o campo para impedir edições manuais
               fullWidth
-              required
             />
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
-              label="Preço"
-              name="preco"
+              label="Buscar Prato"
+              value={searchPrato}
+              onChange={(e) => setSearchPrato(e.target.value)}
+              fullWidth
+            />
+            <TextField
+              select
+              label="Prato"
+              name="pratos_id_prato"
+              value={pedidoAtual.pratos_id_prato}
+              onChange={handleChange}
+              fullWidth
+              required
+            >
+              {filteredPratos.map((prato) => (
+                <MenuItem key={prato.id_prato} value={prato.id_prato}>
+                  {prato.nome}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="Data do Pedido"
+              name="data_pedido"
+              type="datetime-local"
+              value={pedidoAtual.data_pedido}
+              onChange={handleChange}
+              fullWidth
+              required
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="Tempo Estimado (minutos)"
+              name="tempo_estimado"
               type="number"
-              value={pedidoAtual.preco}
+              value={pedidoAtual.tempo_estimado}
               onChange={handleChange}
               fullWidth
               required
@@ -161,18 +273,26 @@ function PedidosPage() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Nome</TableCell>
-                <TableCell>Descrição</TableCell>
-                <TableCell>Preço</TableCell>
+                <TableCell>Cliente</TableCell>
+                <TableCell>Entregador ID</TableCell>
+                <TableCell>Usuário ID</TableCell>
+                <TableCell>Prato</TableCell>
+                <TableCell>Data Pedido</TableCell>
+                <TableCell>Tempo Estimado</TableCell>
+                <TableCell>Entrega ID</TableCell>
                 <TableCell>Ações</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {pedidos.map((pedido) => (
                 <TableRow key={pedido.id_pedido}>
-                  <TableCell>{pedido.nome}</TableCell>
-                  <TableCell>{pedido.descricao}</TableCell>
-                  <TableCell>{pedido.preco}</TableCell>
+                  <TableCell>{pedido.cliente_nome}</TableCell>
+                  <TableCell>{pedido.entregador_id_entregador}</TableCell>
+                  <TableCell>{pedido.usuarios_id_usuario}</TableCell>
+                  <TableCell>{pedido.prato_nome}</TableCell>
+                  <TableCell>{new Date(pedido.data_pedido).toLocaleString()}</TableCell>
+                  <TableCell>{pedido.tempo_estimado} min</TableCell>
+                  <TableCell>{pedido.entrega_id_entrega}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEdit(pedido.id_pedido)}>
                       <Edit />

@@ -17,6 +17,8 @@ import IngredientesPage from './components/miniPage/IngredientesPage';
 import ClientesPage from './components/miniPage/ClientesPage';
 import UserPage from './components/miniPage/UserPage';
 import EntregadoresPage from './components/miniPage/EntregadoresPage';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from '../../apis/AuthContext';
 
 import {
   chartsCustomizations,
@@ -24,6 +26,7 @@ import {
   datePickersCustomizations,
   treeViewCustomizations,
 } from './theme/customizations';
+import { Button } from '@mui/material';
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -34,8 +37,10 @@ const xThemeComponents = {
 
 export default function Dashboard(props) {
   const [selectedComponent, setSelectedComponent] = React.useState('MainGrid');
-
+  const { userid } = useAuth();
+  const navigate = useNavigate();
   const renderComponent = () => {
+    
     switch (selectedComponent) {
       case 'Pedidos':
         return <PagePedidos />;
@@ -57,15 +62,17 @@ export default function Dashboard(props) {
         return <MainGrid />;
     }
   };
-
+ 
+  if (userid !== null) {
   return (
+   
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: 'flex' }}>
-        <SideMenu setSelectedComponent={setSelectedComponent} /> {/* Passa o setSelectedComponent como prop */}
+        <SideMenu userid={userid} setSelectedComponent={setSelectedComponent} /> {/* Passa o setSelectedComponent como prop */}
         <AppNavbar />
 
-        {/* Conteúdo principal dinâmico */}
+       
         <Box
           component="main"
           sx={(theme) => ({
@@ -91,5 +98,24 @@ export default function Dashboard(props) {
         </Box>
       </Box>
     </AppTheme>
+  
   );
+} else {return (
+   
+  <AppTheme {...props} themeComponents={xThemeComponents}>
+    <CssBaseline enableColorScheme />
+    <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            sx={{ marginTop: 2 }}
+          onClick={ () => {navigate("/")}}
+          
+          >
+            Login
+          </Button>
+  </AppTheme>
+
+);}
 }
