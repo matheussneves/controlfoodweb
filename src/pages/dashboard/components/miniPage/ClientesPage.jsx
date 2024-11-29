@@ -10,7 +10,6 @@ function ClientesPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Função para carregar os clientes
   useEffect(() => {
     carregarClientes();
   }, []);
@@ -24,7 +23,6 @@ function ClientesPage() {
     }
   };
 
-  // Função para lidar com a submissão do formulário de novo cliente
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -45,7 +43,6 @@ function ClientesPage() {
     }
   };
 
-  // Função para editar um cliente
   const handleEdit = async (id) => {
     try {
       const cliente = await getClienteById(id);
@@ -57,7 +54,6 @@ function ClientesPage() {
     }
   };
 
-  // Função para excluir um cliente
   const handleDelete = async (id) => {
     try {
       await deleteCliente(id);
@@ -68,7 +64,6 @@ function ClientesPage() {
     }
   };
 
-  // Função para lidar com mudanças no formulário
   const handleChange = (event) => {
     const { name, value } = event.target;
     setClienteAtual((prev) => ({ ...prev, [name]: value }));

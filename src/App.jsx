@@ -6,7 +6,6 @@ import LoginPage from "./pages/login_page/LoginPage"
 import Home from "./pages/dashboard/Dashboard.tsx"
 function App() {
 
-//     <Route path="/Dashboard" element={<Dashboard />} />
   return (
     <div className="App">
       <AuthProvider>

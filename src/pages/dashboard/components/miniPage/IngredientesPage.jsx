@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box, Typography, TextField, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { createIngrediente, getIngredientes, getIngredienteById, updateIngrediente, deleteIngrediente } from '../../../../apis/requests'; // Importa as funções de API para ingredientes
+import { createIngrediente, getIngredientes, getIngredienteById, updateIngrediente, deleteIngrediente } from '../../../../apis/requests';
 
 function IngredientesPage() {
   const [ingredientes, setIngredientes] = useState([]);
@@ -12,7 +12,6 @@ function IngredientesPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Função para carregar os ingredientes
   useEffect(() => {
     carregarIngredientes();
   }, []);
@@ -29,7 +28,6 @@ function IngredientesPage() {
     }
   };
 
-  // Função para lidar com a submissão do formulário de novo ingrediente
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -51,7 +49,6 @@ function IngredientesPage() {
     }
   };
 
-  // Função para editar um ingrediente
   const handleEdit = async (id) => {
     setLoading(true);
     try {
@@ -66,7 +63,6 @@ function IngredientesPage() {
     }
   };
 
-  // Função para excluir um ingrediente
   const handleDelete = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este ingrediente?')) {
       setLoading(true);
@@ -81,8 +77,7 @@ function IngredientesPage() {
       }
     }
   };
-
-  // Função para lidar com mudanças no formulário
+  
   const handleChange = (event) => {
     const { name, value } = event.target;
     setIngredienteAtual((prev) => ({ ...prev, [name]: value }));

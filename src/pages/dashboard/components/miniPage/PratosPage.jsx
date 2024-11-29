@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box, Typography, TextField, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { createPrato, getPratos, getPratoById, updatePrato, deletePrato } from '../../../../apis/requests'; // Importa as funções de API para pratos
+import { createPrato, getPratos, getPratoById, updatePrato, deletePrato } from '../../../../apis/requests';
 
 function PratosPage() {
   const [pratos, setPratos] = useState([]);
@@ -12,7 +12,6 @@ function PratosPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Função para carregar os pratos
   useEffect(() => {
     carregarPratos();
   }, []);
@@ -29,7 +28,6 @@ function PratosPage() {
     }
   };
 
-  // Função para lidar com a submissão do formulário de novo prato
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -51,7 +49,6 @@ function PratosPage() {
     }
   };
 
-  // Função para editar um prato
   const handleEdit = async (id) => {
     setLoading(true);
     try {
@@ -66,7 +63,6 @@ function PratosPage() {
     }
   };
 
-  // Função para excluir um prato
   const handleDelete = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este prato?')) {
       setLoading(true);
@@ -82,7 +78,6 @@ function PratosPage() {
     }
   };
 
-  // Função para lidar com mudanças no formulário
   const handleChange = (event) => {
     const { name, value } = event.target;
     setPratoAtual((prev) => ({ ...prev, [name]: value }));

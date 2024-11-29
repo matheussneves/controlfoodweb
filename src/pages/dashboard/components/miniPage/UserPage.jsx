@@ -17,7 +17,7 @@ import {
   Checkbox,
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { getUsers, createUser, updateUser, deleteUser } from '../../../../apis/requests'; // Certifique-se de que essas funções estão definidas corretamente.
+import { getUsers, createUser, updateUser, deleteUser } from '../../../../apis/requests';
 
 const UserPage = () => {
   const [users, setUsers] = useState([]);
@@ -119,7 +119,7 @@ const UserForm = ({ selectedUser, onSave }) => {
     if (selectedUser) {
       setNome(selectedUser.nome || '');
       setEmail(selectedUser.email || '');
-      setSenha(''); // Senha não será carregada por motivos de segurança
+      setSenha('');
       setAccessCreateUser(selectedUser.acesso_criar_usuario || false);
       setAccessDashboard(selectedUser.acesso_dashboard || false);
       setAccessCreateOrder(selectedUser.acesso_criar_pedido || false);
@@ -141,7 +141,7 @@ const UserForm = ({ selectedUser, onSave }) => {
     const userData = {
       nome,
       email,
-      senha: senha || undefined, // Senha é enviada apenas se estiver preenchida
+      senha: senha || undefined,
       acesso_criar_usuario: accessCreateUser,
       acesso_dashboard: accessDashboard,
       acesso_criar_pedido: accessCreateOrder,

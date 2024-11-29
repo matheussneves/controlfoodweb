@@ -31,8 +31,8 @@ export default function SideMenu({ userid, setSelectedComponent }) {
     const fetchUser = async () => {
       try {
         if (userid) {
-          const response = await getUserById(userid); // Chama a API para obter os dados do usuário
-          setUser(response); // Define os dados do usuário no estado
+          const response = await getUserById(userid);
+          setUser(response);
         }
       } catch (error) {
         setUser(error)

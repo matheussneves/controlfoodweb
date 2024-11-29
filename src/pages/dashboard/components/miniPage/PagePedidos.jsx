@@ -7,18 +7,18 @@ import {
 import { Edit, Delete } from '@mui/icons-material';
 import {
   createPedido, getPedidos, getPedidoById, updatePedido, deletePedido, getPratos, getClientes
-} from '../../../../apis/requests'; // Importa as funções de API
+} from '../../../../apis/requests';
 import { useAuth } from '../../../../apis/AuthContext';
 
 function PedidosPage() {
-  const { userid } = useAuth(); // Obtém o ID do usuário autenticado
+  const { userid } = useAuth();
   const [pedidos, setPedidos] = useState([]);
-  const [clientes, setClientes] = useState([]); // Estado para armazenar a lista de clientes
-  const [pratos, setPratos] = useState([]); // Estado para armazenar a lista de pratos
+  const [clientes, setClientes] = useState([]);
+  const [pratos, setPratos] = useState([]);
   const [pedidoAtual, setPedidoAtual] = useState({
     cliente_id_cliente: '',
     entregador_id_entregador: '',
-    usuarios_id_usuario: userid, // Preenche automaticamente com o ID do usuário autenticado
+    usuarios_id_usuario: userid,
     pratos_id_prato: '',
     data_pedido: '',
     tempo_estimado: '',
@@ -29,7 +29,7 @@ function PedidosPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   
-  // Estados para filtros de busca
+  
   const [searchCliente, setSearchCliente] = useState('');
   const [searchPrato, setSearchPrato] = useState('');
 
@@ -82,7 +82,7 @@ function PedidosPage() {
       setPedidoAtual({
         cliente_id_cliente: '',
         entregador_id_entregador: '',
-        usuarios_id_usuario: userid, // Garante que o ID do usuário autenticado seja mantido
+        usuarios_id_usuario: userid, 
         pratos_id_prato: '',
         data_pedido: '',
         tempo_estimado: '',
@@ -103,7 +103,7 @@ function PedidosPage() {
       const pedido = await getPedidoById(id);
       setPedidoAtual({
         ...pedido,
-        usuarios_id_usuario: userid, // Garante que o ID do usuário não seja sobrescrito na edição
+        usuarios_id_usuario: userid, 
       });
       setModoEdicao(true);
       setPedidoId(id);
@@ -134,7 +134,6 @@ function PedidosPage() {
     setPedidoAtual((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Filtros de busca
   const filteredClientes = clientes.filter((cliente) =>
     cliente.nome.toLowerCase().includes(searchCliente.toLowerCase())
   );
@@ -203,8 +202,8 @@ function PedidosPage() {
             <TextField
               label="Usuário ID"
               name="usuarios_id_usuario"
-              value={userid} // Exibe o valor obtido do contexto
-              disabled // Bloqueia o campo para impedir edições manuais
+              value={userid}
+              disabled 
               fullWidth
             />
           </Grid>

@@ -4,7 +4,7 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
-// Função genérica para lidar com requisições de API
+
 async function apiRequest(endpoint, method = 'GET', body = null) {
   const options = {
     method,
@@ -21,12 +21,10 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
   return await response.json();
 }
 
-// Funções para Login
 export function loginApi(email, password) {
   return apiRequest('/login', 'POST', { login: email, senha: password });
 }
 
-// Funções para Usuários
 export function createUser(data) {
   return apiRequest('/usuarios', 'POST', data);
 }
@@ -47,7 +45,6 @@ export function deleteUser(id) {
   return apiRequest(`/usuarios/${id}`, 'DELETE');
 }
 
-// Funções para Ingredientes
 export function createIngrediente(data) {
   return apiRequest('/ingredientes', 'POST', data);
 }
@@ -68,7 +65,6 @@ export function deleteIngrediente(id) {
   return apiRequest(`/ingredientes/${id}`, 'DELETE');
 }
 
-// Funções para Histórico de Entrada
 export function createHistorico(data) {
   return apiRequest('/historico', 'POST', data);
 }
@@ -89,7 +85,6 @@ export function deleteHistorico(id) {
   return apiRequest(`/historico/${id}`, 'DELETE');
 }
 
-// Funções para Estoque
 export function createEstoque(data) {
   return apiRequest('/estoque', 'POST', data);
 }
@@ -110,7 +105,6 @@ export function deleteEstoque(id) {
   return apiRequest(`/estoque/${id}`, 'DELETE');
 }
 
-// Funções para Pratos
 export function createPrato(data) {
   return apiRequest('/pratos', 'POST', data);
 }
@@ -131,7 +125,6 @@ export function deletePrato(id) {
   return apiRequest(`/pratos/${id}`, 'DELETE');
 }
 
-// Funções para Clientes
 export function createCliente(data) {
   return apiRequest('/clientes', 'POST', data);
 }

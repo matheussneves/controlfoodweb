@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getEntregas } from '../../../../apis/requests'; // Função para obter as entregas
+import { getEntregas } from '../../../../apis/requests'; 
 import { Container, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Snackbar, Alert } from '@mui/material';
 
 function EntregasPage() {
@@ -7,7 +7,6 @@ function EntregasPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Função para carregar as entregas
   useEffect(() => {
     carregarEntregas();
   }, []);
@@ -24,11 +23,10 @@ function EntregasPage() {
     }
   };
 
-  // Função para formatar as datas com hora
   const formatarDataHora = (data) => {
     if (!data) return '';
     const date = new Date(data);
-    return date.toLocaleString('pt-BR'); // Formato brasileiro (DD/MM/YYYY HH:mm:ss)
+    return date.toLocaleString('pt-BR');
   };
 
   return (
