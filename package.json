@@ -1,7 +1,7 @@
 {
   "name": "controlfood",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,8 +12,11 @@
   "dependencies": {
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
+    "@fontsource/roboto": "^5.1.0",
+    "@mui/core-downloads-tracker": "^6.1.1",
     "@mui/icons-material": "latest",
     "@mui/material": "latest",
+    "@mui/styled-engine-sc": "^6.1.1",
     "@mui/x-charts": "latest",
     "@mui/x-data-grid": "latest",
     "@mui/x-data-grid-pro": "latest",
@@ -23,19 +26,18 @@
     "@react-spring/web": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "axios": "^1.8.4",
     "clsx": "latest",
     "dayjs": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "typescript": "latest",
-    "@fontsource/roboto": "^5.1.0",
-    "@mui/core-downloads-tracker": "^6.1.1",
-    "@mui/styled-engine-sc": "^6.1.1",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
+    "react": "latest",
+    "react-dom": "latest",
     "react-router-dom": "^6.26.2",
+    "recharts": "^2.15.3",
     "sort-by": "^0.0.2",
-    "styled-components": "^6.1.13"
+    "styled-components": "^6.1.13",
+    "typescript": "latest"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
