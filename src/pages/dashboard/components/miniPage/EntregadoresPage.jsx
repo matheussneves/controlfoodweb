@@ -1,25 +1,32 @@
+// src/pages/EntregadoresPage.jsx
+
 import React, { useState, useEffect } from 'react';
-import { 
-  Container, 
-  Box, 
-  Grid, 
-  Typography, 
-  CircularProgress, 
-  Snackbar, 
-  TextField, 
-  Button, 
-  List, 
-  ListItem, 
-  ListItemText, 
-  IconButton, 
-  Alert 
+import InputMask from 'react-input-mask';
+import {
+  Container,
+  Box,
+  Grid,
+  Typography,
+  CircularProgress,
+  Snackbar,
+  TextField,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Alert,
+  MenuItem,
+  Select,
+  Checkbox,
+  ListItemText as MuiListItemText
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { 
-  getDeliverers, 
-  createDeliverer, 
-  updateDeliverer, 
-  deleteDeliverer 
+import {
+  getDeliverers,
+  createDeliverer,
+  updateDeliverer,
+  deleteDeliverer
 } from '../../../../apis/requests';
 
 const EntregadoresPage = () => {
@@ -123,6 +130,7 @@ const DelivererForm = ({ selectedDeliverer, onSave }) => {
   const [telefone, setTelefone] = useState('');
   const [veiculo, setVeiculo] = useState('');
   const [placa, setPlaca] = useState('');
+  const [selectedTelefone, setSelectedTelefone] = useState([]);  // Estado para telefones múltiplos
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -132,21 +140,33 @@ const DelivererForm = ({ selectedDeliverer, onSave }) => {
       setTelefone(selectedDeliverer.telefone || '');
       setVeiculo(selectedDeliverer.veiculo || '');
       setPlaca(selectedDeliverer.placa || '');
+      // Ajuste para múltiplos telefones, se houver
+      if (selectedDeliverer.telefone) {
+        setSelectedTelefone([selectedDeliverer.telefone]);
+      }
     } else {
       setNome('');
       setSenha('');
       setTelefone('');
       setVeiculo('');
       setPlaca('');
+      setSelectedTelefone([]);
     }
   }, [selectedDeliverer]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const delivererData = { nome, senha, telefone, veiculo, placa };
+    const delivererData = { nome, senha, telefone: selectedTelefone.join(','), veiculo, placa };  // Junta os telefones em uma string separada por vírgulas
     await onSave(delivererData);
     setLoading(false);
+  };
+
+  const handleTelefoneChange = (event) => {
+    const { value } = event.target;
+    setSelectedTelefone((prev) => 
+      prev.includes(value) ? prev.filter((telefone) => telefone !== value) : [...prev, value]
+    );
   };
 
   return (
@@ -163,36 +183,66 @@ const DelivererForm = ({ selectedDeliverer, onSave }) => {
         required
       />
       <TextField
-        label="senha"
+        label="Senha"
         fullWidth
-        value={''}
+        value={senha}
         onChange={(e) => setSenha(e.target.value)}
         sx={{ mb: 2 }}
         required
-        type="senha"
+        type="password"
       />
-      <TextField
-        label="Telefone"
-        fullWidth
+      <InputMask
+        mask="(99) 99999-9999"
         value={telefone}
         onChange={(e) => setTelefone(e.target.value)}
+      >
+        {(inputProps) => (
+          <TextField
+            {...inputProps}
+            label="Telefone"
+            fullWidth
+            sx={{ mb: 2 }}
+            required
+          />
+        )}
+      </InputMask>
+
+      {/* Campo para selecionar múltiplos telefones */}
+      <TextField
+        select
+        label="Telefones"
+        value={selectedTelefone}
+        onChange={handleTelefoneChange}
+        fullWidth
+        SelectProps={{
+          multiple: true,
+          renderValue: (selected) => selected.join(', '),
+        }}
         sx={{ mb: 2 }}
-        required
-      />
+      >
+        {['(11) 99999-9999', '(11) 98888-8888', '(11) 97777-7777'].map((telefone) => (
+          <MenuItem key={telefone} value={telefone}>
+            <Checkbox checked={selectedTelefone.indexOf(telefone) > -1} />
+            <MuiListItemText primary={telefone} />
+          </MenuItem>
+        ))}
+      </TextField>
+
       <TextField
         label="Veículo"
         fullWidth
         value={veiculo}
-        onChange={(e) => setVeiculo(e.target.value)}
-        sx={{ mb: 2 }}
+        onChange={(e) => setVeiculo(e.target.value.toUpperCase())}
+        sx={{ mb: 2, textTransform: 'uppercase' }}
         required
       />
       <TextField
         label="Placa"
         fullWidth
         value={placa}
-        onChange={(e) => setPlaca(e.target.value)}
-        sx={{ mb: 2 }}
+        onChange={(e) => setPlaca(e.target.value.toUpperCase())}
+        inputProps={{ maxLength: 7 }}
+        sx={{ mb: 2, textTransform: 'uppercase' }}
         required
       />
       <Button type="submit" variant="contained" color="primary" disabled={loading}>

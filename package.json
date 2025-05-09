@@ -31,13 +31,18 @@
     "dayjs": "latest",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
+    "primeicons": "^7.0.0",
+    "primereact": "^10.9.5",
     "react": "latest",
     "react-dom": "latest",
+    "react-input-mask": "^2.0.4",
+    "react-number-format": "^5.4.4",
     "react-router-dom": "^6.26.2",
     "recharts": "^2.15.3",
     "sort-by": "^0.0.2",
     "styled-components": "^6.1.13",
-    "typescript": "latest"
+    "typescript": "latest",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
