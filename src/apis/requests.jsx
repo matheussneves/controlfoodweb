@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://127.0.0.1:21229';
+const API_BASE_URL = 'https://controlfoodapi-d8a49e8667a8.herokuapp.com';
 
 const headers = {
   'Content-Type': 'application/json',
