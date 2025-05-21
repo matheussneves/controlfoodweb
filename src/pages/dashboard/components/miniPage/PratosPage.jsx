@@ -3,17 +3,23 @@ import {
   Container, Box, Typography, TextField, Button,
   Grid, Snackbar, Alert, CircularProgress,
   TableContainer, Table, TableHead, TableRow,
-  TableCell, TableBody, IconButton
+  TableCell, TableBody, IconButton, MenuItem
 } from '@mui/material';
-import { MultiSelect } from 'primereact/multiselect';
 import { Edit, Delete } from '@mui/icons-material';
-import axios from 'axios';
+import {
+  getPratos,
+  getIngredientes,
+  updatePrato,
+  createPrato,
+  deletePrato ,
+  getEstoques// <-- Adicione esta importação
+} from '../../../../apis/requests';
 
 const pratoVazio = {
   nome: '',
   descricao: '',
-  preco: '',
-  tempo: '',
+  preco: 0,
+  tempo: 0,
 };
 
 function PratosPage() {
@@ -21,6 +27,7 @@ function PratosPage() {
   const [pratoAtual, setPratoAtual] = useState(pratoVazio);
   const [ingredientes, setIngredientes] = useState([]);
   const [ingredientesSelecionados, setIngredientesSelecionados] = useState([]);
+  const [estoque, setEstoque] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -28,12 +35,13 @@ function PratosPage() {
   useEffect(() => {
     carregarPratos();
     carregarIngredientes();
+    carregarEstoque();
   }, []);
 
   const carregarPratos = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get('https://controlfoodapi-d8a49e8667a8.herokuapp.com/pratos');
+      const data = await getPratos();
       setPratos(data);
     } catch {
       setError('Erro ao carregar pratos');
@@ -44,14 +52,19 @@ function PratosPage() {
 
   const carregarIngredientes = async () => {
     try {
-      const response = await axios.get('https://controlfoodapi-d8a49e8667a8.herokuapp.com/ingredientes');
-      const ops = response.data.map(item => ({
-        label: item.descricao,
-        value: item,
-      }));
-      setIngredientes(ops);
+      const data = await getIngredientes();
+      setIngredientes(data);
     } catch {
       setError('Erro ao carregar ingredientes');
+    }
+  };
+
+  const carregarEstoque = async () => {
+    try {
+      const data = await getEstoques();
+      setEstoque(data);
+    } catch {
+      setError('Erro ao carregar estoque');
     }
   };
 
@@ -59,25 +72,40 @@ function PratosPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const listaApi = ingredientesSelecionados.map(i => i.value);
+      // Monta o array de ingredientes conforme o swagger
+      const listaApi = ingredientesSelecionados.map(id => {
+        const ing = estoque.find(i => i.ingrediente_Id_ingrediente === id);
+        if (!ing || ing.quantidade <= 0) {
+          throw new Error(`Ingrediente sem estoque`);
+        }
+        return {
+          id_ingrediente: ing.ingrediente_Id_ingrediente,
+          quantidade: ing.quantidade || 0,
+          medida: ing.medida || ''
+        };
+      });
+       //console.log('listaApi ', listaApi);
+  
+      
       const body = {
         ...pratoAtual,
         ingredientes: listaApi,
       };
-
-      if (pratoAtual.id) {
-        await axios.put(`https://controlfoodapi-d8a49e8667a8.herokuapp.com/pratos/${pratoAtual.id_prato}`, body);
+ console.log('body ', JSON.stringify(body));
+      if (pratoAtual.id_prato) {
+        await updatePrato(pratoAtual.id_prato, body);
         setSuccess('Prato atualizado com sucesso');
       } else {
-        await axios.post('https://controlfoodapi-d8a49e8667a8.herokuapp.com/pratos', body);
+        
+        await createPrato(body);
         setSuccess('Prato salvo com sucesso');
       }
 
       setPratoAtual(pratoVazio);
       setIngredientesSelecionados([]);
       carregarPratos();
-    } catch {
-      setError('Erro ao salvar prato');
+    } catch (error) {
+      setError('Erro ao salvar prato: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -88,27 +116,28 @@ function PratosPage() {
     setPratoAtual(prev => ({ ...prev, [name]: value }));
   };
 
+  // Novo handler para ingredientes usando TextField multiple
   const handleIngredientesChange = (e) => {
-    setIngredientesSelecionados(e.value);
+    const selectedIds = Array.isArray(e.target.value)
+      ? e.target.value.map(Number)
+      : [Number(e.target.value)];
+    setIngredientesSelecionados(selectedIds);
   };
 
   const handleEdit = (id) => {
     const prato = pratos.find(p => p.id_prato === id);
     if (prato) {
       setPratoAtual(prato);
-      const selecionados = prato.ingredientes?.map(ing => ({
-        label: ing.descricao,
-        value: ing,
-      })) || [];
+      // ingredientesSelecionados agora é um array de ids
+      const selecionados = prato.ingredientes?.map(ing => ing.id_ingrediente) || [];
       setIngredientesSelecionados(selecionados);
     }
   };
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:21229/pratos/${id}`);
+      await deletePrato(id);
       setSuccess('Prato excluído com sucesso');
-  
       carregarPratos();
     } catch {
       setError('Erro ao excluir prato');
@@ -124,6 +153,7 @@ function PratosPage() {
       preco: numericValue ? (parseFloat(numericValue) / 100).toFixed(2) : '',
     }));
   };
+
 
   return (
     <Container>
@@ -167,34 +197,39 @@ function PratosPage() {
             />
           </Grid>
           <Grid item xs={12}>
-            <MultiSelect
-              value={ingredientesSelecionados}
-              options={ingredientes}
-              onChange={handleIngredientesChange}
-              display="chip"
-              optionLabel="label"
-              placeholder="Selecione os ingredientes"
-              style={{ width: '100%' }}
-            />
             <TextField
-                          label="Selecione os ingredientes"
-                          select
-                          name="ingredientess"
-                          fullWidth
-                          required
-                          SelectProps={{ multiple: true }}
-                          value={pedidoAtual.pratos_id_prato || []}
-                          onChange={handleChange}
-                        >
-                          {filteredPratos.map((prato) => (
-                            <MenuItem key={prato.id_prato} value={prato.id_prato}>{prato.nome}</MenuItem>
-                          ))}
-                        </TextField>
+              label="Descrição do Prato"
+              name="descricao"
+              multiline
+              fullWidth
+              value={pratoAtual.descricao}
+              onChange={handleChange}
+              
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Selecione os ingredientes"
+              select
+              name="ingredientes"
+              fullWidth
+              required
+              SelectProps={{ multiple: true }}
+              value={ingredientesSelecionados}
+              onChange={handleIngredientesChange}
+            >
+              {ingredientes.map((ing) => (
+                <MenuItem key={ing.Id_ingrediente} value={ing.Id_ingrediente}>
+                  {ing.descricao}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
         </Grid>
 
         <Box mt={2}>
-          <Button type="submit" variant="contained" disabled={loading}>
+          <Button type="submit" variant="contained" disabled={loading} onClick={handleSubmit}>
             {loading ? <CircularProgress size={24} /> : 'Salvar Prato'}
           </Button>
         </Box>

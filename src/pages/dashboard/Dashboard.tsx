@@ -75,21 +75,21 @@ export default function Dashboard(props) {
     }
   };
 
-  if (!userid) {
-    return (
-      <AppTheme {...props} themeComponents={xThemeComponents}>
-        <CssBaseline enableColorScheme />
-        <Box sx={{ p: 3 }}>
-          <Typography variant="h5" align="center" gutterBottom>
-            Você precisa estar logado para acessar o painel.
-          </Typography>
-          <Button fullWidth variant="contained" color="primary" onClick={() => navigate("/")}>
-            Login
-          </Button>
-        </Box>
-      </AppTheme>
-    );
-  }
+  // if (!userid) {
+  //   return (
+  //     <AppTheme {...props} themeComponents={xThemeComponents}>
+  //       <CssBaseline enableColorScheme />
+  //       <Box sx={{ p: 3 }}>
+  //         <Typography variant="h5" align="center" gutterBottom>
+  //           Você precisa estar logado para acessar o painel.
+  //         </Typography>
+  //         <Button fullWidth variant="contained" color="primary" onClick={() => navigate("/")}>
+  //           Login
+  //         </Button>
+  //       </Box>
+  //     </AppTheme>
+  //   );
+  // }
 
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>

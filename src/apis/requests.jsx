@@ -13,12 +13,16 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
 
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+    const contentType = response.headers.get('content-type');
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Erro na requisição:', errorData); // Log detalhado
-      throw new Error(errorData.message || 'Erro na requisição');
-    }
+    let errorText = await response.text();
+    throw new Error(errorText);
+  }
+  if (contentType && contentType.includes('application/json')) {
     return await response.json();
+  } else {
+    return await response.text();
+  };
   } catch (error) {
     console.error('Erro ao fazer requisição:', error);
     throw error;
@@ -99,22 +103,33 @@ export function deleteEstoque(id) {
 }
 
 // Pratos
+
+// Criar prato
 export function createPrato(data) {
+  // data deve ser: { nome, descricao, preco, tempo, ingredientes: [{ id_ingrediente, quantidade, medida }] }
   return apiRequest('/pratos', 'POST', data);
 }
+
+// Listar todos os pratos
 export function getPratos() {
   return apiRequest('/pratos', 'GET');
 }
+
+// Buscar prato por ID
 export function getPratoById(id) {
   return apiRequest(`/pratos/${id}`, 'GET');
 }
+
+// Atualizar prato por ID
 export function updatePrato(id, data) {
+  // data deve ser: { nome, descricao, preco, tempo, ingredientes: [{ id_ingrediente, quantidade, medida }] }
   return apiRequest(`/pratos/${id}`, 'PUT', data);
 }
+
+// Remover prato por ID
 export function deletePrato(id) {
   return apiRequest(`/pratos/${id}`, 'DELETE');
 }
-
 // Clientes
 export function createCliente(data) {
   return apiRequest('/clientes', 'POST', data);
