@@ -11,7 +11,7 @@
     "start": "node server.js",
     "lint": "eslint .",
     
-    "heroku-postbuild": "npm run build && vite preview --port $PORT"
+    "heroku-postbuild": "npm run build"
   },
   "dependencies": {
     "@emotion/react": "latest",
