@@ -47,12 +47,15 @@ const UserPage = () => {
       if (selectedUser) {
         await updateUser(selectedUser.id, userData);
       } else {
-        await createUser(userData);
+        const response = await createUser(userData); // Garante que o await seja respeitado
+        if (!response?.id) throw new Error('Erro ao criar usuário'); // valida resposta
       }
+      const updatedUsers = await getUsers(); // Só chama depois da criação completa
+      setUsers(updatedUsers);
       setSuccess('Usuário salvo com sucesso.');
-      setUsers(await getUsers());
       setSelectedUser(null);
     } catch (error) {
+      console.error(error);
       setError('Falha ao salvar o usuário.');
     } finally {
       setLoading(false);
@@ -80,17 +83,14 @@ const UserPage = () => {
         <Typography variant="h4">Gerenciamento de Usuários</Typography>
       </Box>
 
-      {/* Feedback de erro e sucesso */}
       {error && <Snackbar open={true} autoHideDuration={6000}><Alert severity="error">{error}</Alert></Snackbar>}
       {success && <Snackbar open={true} autoHideDuration={6000}><Alert severity="success">{success}</Alert></Snackbar>}
 
       <Grid container spacing={3}>
-        {/* Formulário de Adicionar/Editar Usuário */}
         <Grid item xs={12} md={4}>
           <UserForm selectedUser={selectedUser} onSave={handleSave} />
         </Grid>
 
-        {/* Lista de Usuários */}
         <Grid item xs={12} md={8}>
           {loading ? <CircularProgress /> : (
             <UserList
@@ -177,7 +177,7 @@ const UserForm = ({ selectedUser, onSave }) => {
         value={senha}
         onChange={(e) => setSenha(e.target.value)}
         sx={{ mb: 2 }}
-        type="senha"
+        type="password"
       />
       <FormControlLabel
         control={<Checkbox checked={accessCreateUser} onChange={(e) => setAccessCreateUser(e.target.checked)} />}
