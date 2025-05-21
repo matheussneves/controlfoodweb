@@ -226,17 +226,7 @@ function PedidosPage() {
               ))}
             </TextField>
           </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField
-              label="Prato" select name="pratos_id_prato" fullWidth required
-              value={pedidoAtual.pratos_id_prato}
-              onChange={handleChange}
-            >
-              {filteredPratos.map((prato) => (
-                <MenuItem key={prato.id_prato} value={prato.id_prato}>{prato.nome}</MenuItem>
-              ))}
-            </TextField>
-          </Grid>
+          
           <Grid item xs={12} sm={3}>
             <TextField
               label="Data do Pedido" type="datetime-local" name="data_pedido" fullWidth required
@@ -245,35 +235,29 @@ function PedidosPage() {
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item xs={12} sm={3}>
+          
+        
+          
+        </Grid>
+        <Box mt={2}>
+        <Grid item xs={12} sm={3}>
             <TextField
-              label="Tempo Estimado (min)" name="tempo_estimado" type="number" fullWidth required
-              value={pedidoAtual.tempo_estimado}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField
-              label="ID de Entrega"
-              name="entrega_id_entrega"
+              label="Pratos"
+              select
+              name="pratos_id_prato"
               fullWidth
-              value={pedidoAtual.entrega_id_entrega}
-              disabled
-            />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField
-              label="Status" select name="status" fullWidth required
-              value={pedidoAtual.status}
+              required
+              SelectProps={{ multiple: true }}
+              value={pedidoAtual.pratos_id_prato || []}
               onChange={handleChange}
             >
-              <MenuItem value="pendente">Pendente</MenuItem>
-              <MenuItem value="em preparação">Em Preparação</MenuItem>
-              <MenuItem value="em entrega">Em Entrega</MenuItem>
-              <MenuItem value="entregue">Entregue</MenuItem>
+              {filteredPratos.map((prato) => (
+                <MenuItem key={prato.id_prato} value={prato.id_prato}>{prato.nome}</MenuItem>
+              ))}
             </TextField>
+            
           </Grid>
-        </Grid>
+          </Box>
         <Box mt={2}>
           <Button type="submit" variant="contained" color="primary" disabled={loading}>
             {loading ? <CircularProgress size={24} /> : (modoEdicao ? 'Atualizar Pedido' : 'Adicionar Pedido')}
@@ -315,7 +299,11 @@ function PedidosPage() {
                 <TableRow key={pedido.id_pedido}>
                   <TableCell>{pedido.cliente?.nome}</TableCell>
                   <TableCell>{pedido.entregador?.nome}</TableCell>
-                  <TableCell>{pedido.prato?.nome}</TableCell>
+                  <TableCell>
+                    {Array.isArray(pedido.prato)
+                      ? pedido.prato.map((p) => p.nome).join(', ')
+                      : pedido.prato?.nome}
+                  </TableCell>
                   <TableCell>{pedido.data_pedido}</TableCell>
                   <TableCell>{pedido.tempo_estimado}</TableCell>
                   <TableCell>{pedido.status}</TableCell>

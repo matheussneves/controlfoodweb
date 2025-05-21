@@ -33,7 +33,7 @@ function PratosPage() {
   const carregarPratos = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get('http://127.0.0.1:21229/pratos');
+      const { data } = await axios.get('https://controlfoodapi-d8a49e8667a8.herokuapp.com/pratos');
       setPratos(data);
     } catch {
       setError('Erro ao carregar pratos');
@@ -44,7 +44,7 @@ function PratosPage() {
 
   const carregarIngredientes = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:21229/ingredientes');
+      const response = await axios.get('https://controlfoodapi-d8a49e8667a8.herokuapp.com/ingredientes');
       const ops = response.data.map(item => ({
         label: item.descricao,
         value: item,
@@ -66,10 +66,10 @@ function PratosPage() {
       };
 
       if (pratoAtual.id) {
-        await axios.put(`http://127.0.0.1:21229/pratos/${pratoAtual.id_prato}`, body);
+        await axios.put(`https://controlfoodapi-d8a49e8667a8.herokuapp.com/pratos/${pratoAtual.id_prato}`, body);
         setSuccess('Prato atualizado com sucesso');
       } else {
-        await axios.post('http://127.0.0.1:21229/pratos', body);
+        await axios.post('https://controlfoodapi-d8a49e8667a8.herokuapp.com/pratos', body);
         setSuccess('Prato salvo com sucesso');
       }
 
@@ -176,6 +176,20 @@ function PratosPage() {
               placeholder="Selecione os ingredientes"
               style={{ width: '100%' }}
             />
+            <TextField
+                          label="Selecione os ingredientes"
+                          select
+                          name="ingredientess"
+                          fullWidth
+                          required
+                          SelectProps={{ multiple: true }}
+                          value={pedidoAtual.pratos_id_prato || []}
+                          onChange={handleChange}
+                        >
+                          {filteredPratos.map((prato) => (
+                            <MenuItem key={prato.id_prato} value={prato.id_prato}>{prato.nome}</MenuItem>
+                          ))}
+                        </TextField>
           </Grid>
         </Grid>
 
