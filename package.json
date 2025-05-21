@@ -9,7 +9,7 @@
     "start": "vite preview --port $PORT",
     "lint": "eslint .",
     "preview": "vite preview --port 8080",
-    "heroku-postbuild": "npm run build || vite preview --port $PORT"
+    "heroku-postbuild": "npm run build && vite preview --port $PORT"
   },
   "dependencies": {
     "@emotion/react": "latest",
