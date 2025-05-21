@@ -24,9 +24,7 @@ export default function Header({ breadcrumbComponent }) {
       <Stack direction="row" sx={{ gap: 1 }}>
    
         <CustomDatePicker />
-        <MenuButton showBadge aria-label="Open notifications">
-          <NotificationsRoundedIcon />
-        </MenuButton>
+        
         <ColorModeIconDropdown />
       </Stack>
     </Stack>
