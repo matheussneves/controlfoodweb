@@ -1,1 +1,1 @@
-web: npx vite --port $PORT
+web: npm run build && npm run start

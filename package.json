@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start": "vite build",
+     "build": "vite build",
+    "start": "node server.js",
     "lint": "eslint .",
-    "preview": "vite preview --port 8080"
+    "preview": "vite preview --port 8080",
+    "heroku-postbuild": "npm run build"
   },
   "dependencies": {
     "@emotion/react": "latest",
