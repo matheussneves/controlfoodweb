@@ -1,1 +1,1 @@
-web: npm run build && npm run vite build --port $PORT
+web: npm run build && vite preview --port 8080 $PORT
