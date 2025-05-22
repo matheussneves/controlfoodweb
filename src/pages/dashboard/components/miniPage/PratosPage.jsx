@@ -3,7 +3,7 @@ import {
   Container, Box, Typography, TextField, Button,
   Grid, Snackbar, Alert, CircularProgress,
   TableContainer, Table, TableHead, TableRow,
-  TableCell, TableBody, IconButton, MenuItem
+  TableCell, TableBody, IconButton, MenuItem, Checkbox, ListItemText, Select
 } from '@mui/material';
 import { MultiSelect } from 'primereact/multiselect';
 import { Edit, Delete } from '@mui/icons-material';
@@ -12,8 +12,8 @@ import {
   getIngredientes,
   updatePrato,
   createPrato,
-  deletePrato ,
-  getEstoques// <-- Adicione esta importação
+  deletePrato,
+  getEstoques
 } from '../../../../apis/requests';
 
 // Constantes de prato vazio para iniciar a criação ou edição
@@ -25,15 +25,16 @@ const pratoVazio = {
 };
 
 function PratosPage() {
-  const [pratos, setPratos] = useState([]);
-  const [pratoAtual, setPratoAtual] = useState(pratoVazio);
-  const [ingredientes, setIngredientes] = useState([]);
-  const [ingredientesSelecionados, setIngredientesSelecionados] = useState([]);
-  const [estoque, setEstoque] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [pratos, setPratos] = useState([]); // Lista de pratos
+  const [pratoAtual, setPratoAtual] = useState(pratoVazio); // Prato sendo editado ou criado
+  const [ingredientes, setIngredientes] = useState([]); // Ingredientes disponíveis
+  const [ingredientesSelecionados, setIngredientesSelecionados] = useState([]); // Ingredientes selecionados
+  const [estoque, setEstoque] = useState([]); // Estoque dos ingredientes
+  const [loading, setLoading] = useState(false); // Estado de loading (esperando resposta da API)
+  const [error, setError] = useState(''); // Mensagem de erro
+  const [success, setSuccess] = useState(''); // Mensagem de sucesso
 
+  // Carrega os dados iniciais
   useEffect(() => {
     carregarPratos();
     carregarIngredientes();
@@ -66,6 +67,7 @@ function PratosPage() {
     }
   };
 
+  // Função para carregar o estoque
   const carregarEstoque = async () => {
     try {
       const data = await getEstoques();
@@ -80,11 +82,11 @@ function PratosPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      // Monta o array de ingredientes conforme o swagger
+      // Verifica se todos os ingredientes selecionados possuem estoque suficiente
       const listaApi = ingredientesSelecionados.map(id => {
         const ing = estoque.find(i => i.ingrediente_Id_ingrediente === id);
         if (!ing || ing.quantidade <= 0) {
-          throw new Error(`Ingrediente sem estoque`);
+          throw new Error(`Ingrediente ${ing.descricao} sem estoque suficiente`);
         }
         return {
           id_ingrediente: ing.ingrediente_Id_ingrediente,
@@ -92,19 +94,17 @@ function PratosPage() {
           medida: ing.medida || ''
         };
       });
-       //console.log('listaApi ', listaApi);
-  
-      
+
       const body = {
         ...pratoAtual,  // Inclui todos os dados do prato
         ingredientes: listaApi,  // Passa os ingredientes com a quantidade e medida
       };
- console.log('body ', JSON.stringify(body));
+
+      // Cria ou atualiza o prato
       if (pratoAtual.id_prato) {
         await updatePrato(pratoAtual.id_prato, body);
         setSuccess('Prato atualizado com sucesso');
       } else {
-        
         await createPrato(body);
         setSuccess('Prato salvo com sucesso');
       }
@@ -112,7 +112,7 @@ function PratosPage() {
       // Resetando os estados para criar ou editar outro prato
       setPratoAtual(pratoVazio);
       setIngredientesSelecionados([]);
-      carregarPratos();
+      carregarPratos(); // Atualiza a lista de pratos
     } catch (error) {
       setError('Erro ao salvar prato: ' + error.message);
     } finally {
@@ -126,11 +126,9 @@ function PratosPage() {
     setPratoAtual(prev => ({ ...prev, [name]: value }));
   };
 
-  // Novo handler para ingredientes usando TextField multiple
+  // Função para atualizar os ingredientes selecionados
   const handleIngredientesChange = (e) => {
-    const selectedIds = Array.isArray(e.target.value)
-      ? e.target.value.map(Number)
-      : [Number(e.target.value)];
+    const selectedIds = e.target.value;
     setIngredientesSelecionados(selectedIds);
   };
 
@@ -139,7 +137,6 @@ function PratosPage() {
     const prato = pratos.find(p => p.id_prato === id);
     if (prato) {
       setPratoAtual(prato);
-      // ingredientesSelecionados agora é um array de ids
       const selecionados = prato.ingredientes?.map(ing => ing.id_ingrediente) || [];
       setIngredientesSelecionados(selecionados);
     }
@@ -150,7 +147,7 @@ function PratosPage() {
     try {
       await axios.delete(`http://127.0.0.1:21229/pratos/${id}`);
       setSuccess('Prato excluído com sucesso');
-      carregarPratos();
+      carregarPratos(); // Atualiza a lista de pratos
     } catch {
       setError('Erro ao excluir prato');
     }
@@ -218,27 +215,30 @@ function PratosPage() {
               fullWidth
               value={pratoAtual.descricao}
               onChange={handleChange}
-              
               required
             />
           </Grid>
+
+          {/* Seleção de ingredientes */}
           <Grid item xs={12}>
-            <TextField
-              label="Selecione os ingredientes"
-              select
-              name="ingredientes"
-              fullWidth
-              required
-              SelectProps={{ multiple: true }}
+            <Typography variant="subtitle1" sx={{ mt: 2 }}>
+              Selecione os ingredientes
+            </Typography>
+            <Select
+              multiple
               value={ingredientesSelecionados}
               onChange={handleIngredientesChange}
+              fullWidth
+              displayEmpty
+              renderValue={(selected) => selected.length === 0 ? 'Selecione ingredientes' : `${selected.length} ingrediente(s) selecionado(s)`}
             >
               {ingredientes.map((ing) => (
                 <MenuItem key={ing.Id_ingrediente} value={ing.Id_ingrediente}>
-                  {ing.descricao}
+                  <Checkbox checked={ingredientesSelecionados.indexOf(ing.Id_ingrediente) > -1} />
+                  <ListItemText primary={ing.descricao} />
                 </MenuItem>
               ))}
-            </TextField>
+            </Select>
           </Grid>
         </Grid>
 

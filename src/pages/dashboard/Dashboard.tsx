@@ -105,6 +105,7 @@ export default function Dashboard(props) {
   const navigate = useNavigate();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   // Dados simulados (em breve virão da API)
   const lucroBruto = 20000;
   const lucroLiquido = 17000;
@@ -148,6 +149,8 @@ export default function Dashboard(props) {
     );
   }
 
+=======
+>>>>>>> 10395ff (Ajuste no CardAlert, PratosPage, PagePedidos)
 =======
 >>>>>>> 10395ff (Ajuste no CardAlert, PratosPage, PagePedidos)
   return (
