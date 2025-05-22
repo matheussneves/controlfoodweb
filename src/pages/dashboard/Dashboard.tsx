@@ -43,11 +43,68 @@ const xThemeComponents = {
   ...treeViewCustomizations,
 };
 
+const dashboardMetrics = [
+  { label: 'Lucro Bruto', value: 20000, color: 'primary' },
+  { label: 'Lucro Líquido', value: 17000, color: 'secondary' },
+  { label: 'Pedidos Pendentes', value: 5, color: 'error' },
+  { label: 'Pedidos Entregues', value: 50, color: 'success' },
+];
+
+const chartData = [
+  { name: 'Jan', ganhos: 4000 },
+  { name: 'Fev', ganhos: 3000 },
+  { name: 'Mar', ganhos: 2000 },
+  { name: 'Abr', ganhos: 2780 },
+];
+
+const renderMetricsCard = ({ label, value, color }, idx) => (
+  <Grid item xs={12} sm={6} md={3} key={idx}>
+    <Card sx={{ p: 3 }}>
+      <Typography variant="h6" align="center">{label}</Typography>
+      <Typography variant="h4" align="center" color={color}>
+        R$ {value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+      </Typography>
+    </Card>
+  </Grid>
+);
+
+const ProfitChart = () => (
+  <Box sx={{ mt: 5, width: '100%' }}>
+    <Typography variant="h5" gutterBottom>Evolução de Lucros</Typography>
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={chartData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Line type="monotone" dataKey="ganhos" stroke="#8884d8" />
+      </LineChart>
+    </ResponsiveContainer>
+  </Box>
+);
+
+const renderComponent = (selectedComponent) => {
+  const componentsMap = {
+    'Pedidos': <PagePedidos key="Pedidos" />,
+    'Entrega': <EntregasPage key="Entrega" />,
+    'Pratos': <PratosPage key="Pratos" />,
+    'Estoque': <EstoquePage key="Estoque" />,
+    'Ingredientes': <IngredientesPage key="Ingredientes" />,
+    'Clientes': <ClientesPage key="Clientes" />,
+    'Usuarios': <UserPage key="Usuarios" />,
+    'Entregadores': <EntregadoresPage key="Entregadores" />,
+    'MainGrid': <MainGrid key="MainGrid" />
+  };
+  
+  return componentsMap[selectedComponent] || <MainGrid key="MainGrid" />;
+};
+
 export default function Dashboard(props) {
   const [selectedComponent, setSelectedComponent] = React.useState('MainGrid');
   const { userid } = useAuth();
   const navigate = useNavigate();
 
+<<<<<<< HEAD
   // Dados simulados (em breve virão da API)
   const lucroBruto = 20000;
   const lucroLiquido = 17000;
@@ -91,6 +148,8 @@ export default function Dashboard(props) {
     );
   }
 
+=======
+>>>>>>> 10395ff (Ajuste no CardAlert, PratosPage, PagePedidos)
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
@@ -106,64 +165,22 @@ export default function Dashboard(props) {
         })}>
           <Stack spacing={2} sx={{ alignItems: 'center', mx: 3, pb: 5, mt: { xs: 8, md: 0 } }}>
             <Header breadcrumbComponent={selectedComponent} />
-
+            
             {/* Dashboard principal */}
             {selectedComponent === 'MainGrid' && (
               <>
                 {/* Big Numbers */}
                 <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6} md={3}>
-                    <Card sx={{ p: 3 }}>
-                      <Typography variant="h6" align="center">Lucro Bruto</Typography>
-                      <Typography variant="h4" align="center" color="primary">
-                        R$ {lucroBruto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                      </Typography>
-                    </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
-                    <Card sx={{ p: 3 }}>
-                      <Typography variant="h6" align="center">Lucro Líquido</Typography>
-                      <Typography variant="h4" align="center" color="secondary">
-                        R$ {lucroLiquido.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                      </Typography>
-                    </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
-                    <Card sx={{ p: 3 }}>
-                      <Typography variant="h6" align="center">Pedidos Pendentes</Typography>
-                      <Typography variant="h4" align="center" color="error">
-                        {pedidosPendentes}
-                      </Typography>
-                    </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
-                    <Card sx={{ p: 3 }}>
-                      <Typography variant="h6" align="center">Pedidos Entregues</Typography>
-                      <Typography variant="h4" align="center" color="success">
-                        {pedidosConcluidos}
-                      </Typography>
-                    </Card>
-                  </Grid>
+                  {dashboardMetrics.map((metric, idx) => renderMetricsCard(metric, idx))}
                 </Grid>
 
                 {/* Gráfico de lucros */}
-                <Box sx={{ mt: 5, width: '100%' }}>
-                  <Typography variant="h5" gutterBottom>Evolução de Lucros</Typography>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="ganhos" stroke="#8884d8" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </Box>
+                <ProfitChart />
               </>
             )}
 
             {/* Conteúdo dinâmico (outros componentes) */}
-            {renderComponent()}
+            {renderComponent(selectedComponent)}
           </Stack>
         </Box>
       </Box>

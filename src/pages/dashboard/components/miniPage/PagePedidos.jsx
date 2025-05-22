@@ -31,7 +31,6 @@ function PedidosPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
   const [searchCliente, setSearchCliente] = useState('');
   const [searchPrato, setSearchPrato] = useState('');
   const [searchEntregador, setSearchEntregador] = useState('');
@@ -60,8 +59,8 @@ function PedidosPage() {
     try {
       const data = await getPedidos();
       setPedidos(data);
-    } catch {
-      setError('Erro ao carregar pedidos');
+    } catch (err) {
+      setError(`Erro ao carregar pedidos: ${err.message || 'Erro desconhecido'}`);
     } finally {
       setLoading(false);
     }
@@ -71,8 +70,8 @@ function PedidosPage() {
     try {
       const data = await getPratos();
       setPratos(data);
-    } catch {
-      setError('Erro ao carregar pratos');
+    } catch (err) {
+      setError(`Erro ao carregar pratos: ${err.message || 'Erro desconhecido'}`);
     }
   };
 
@@ -80,8 +79,8 @@ function PedidosPage() {
     try {
       const data = await getClientes();
       setClientes(data);
-    } catch {
-      setError('Erro ao carregar clientes');
+    } catch (err) {
+      setError(`Erro ao carregar clientes: ${err.message || 'Erro desconhecido'}`);
     }
   };
 
@@ -89,8 +88,8 @@ function PedidosPage() {
     try {
       const data = await getDeliverers();
       setDeliverers(data);
-    } catch {
-      setError('Erro ao carregar entregadores');
+    } catch (err) {
+      setError(`Erro ao carregar entregadores: ${err.message || 'Erro desconhecido'}`);
     }
   };
 
@@ -98,20 +97,23 @@ function PedidosPage() {
     event.preventDefault();
     setLoading(true);
 
+    // Verificando o estado do pedido antes de enviar
+    console.log('Pedido Atual:', pedidoAtual);
+
+    if (!pedidoAtual.entrega_id_entrega) {
+      pedidoAtual.entrega_id_entrega = `ENT-${Math.floor(Math.random() * 10000)}`;
+    }
+
     try {
-      if (!pedidoAtual.entrega_id_entrega) {
-        pedidoAtual.entrega_id_entrega = `ENT-${Math.floor(Math.random() * 10000)}`;
-      }
-
-      console.log('🟢 Enviando pedido:', pedidoAtual);
-
       if (modoEdicao) {
         await updatePedido(pedidoId, pedidoAtual);
+        setSuccess('Pedido atualizado com sucesso');
       } else {
         await createPedido(pedidoAtual);
+        setSuccess('Pedido adicionado com sucesso');
       }
 
-      setSuccess(modoEdicao ? 'Pedido atualizado com sucesso' : 'Pedido adicionado com sucesso');
+      // Limpa o formulário e recarrega os pedidos
       setPedidoAtual({
         cliente_id_cliente: '',
         entregador_id_entregador: '',
@@ -125,8 +127,9 @@ function PedidosPage() {
       setModoEdicao(false);
       setPedidoId(null);
       carregarPedidos();
-    } catch {
-      setError('Erro ao salvar pedido');
+    } catch (err) {
+      console.error('Erro ao salvar pedido:', err);
+      setError(`Erro ao salvar pedido: ${err.message || 'Erro desconhecido'}`);
     } finally {
       setLoading(false);
     }
@@ -142,8 +145,9 @@ function PedidosPage() {
       });
       setModoEdicao(true);
       setPedidoId(id);
-    } catch {
-      setError('Erro ao carregar pedido');
+    } catch (err) {
+      console.error('Erro ao carregar pedido:', err);
+      setError(`Erro ao carregar pedido: ${err.message || 'Erro desconhecido'}`);
     } finally {
       setLoading(false);
     }
@@ -156,8 +160,9 @@ function PedidosPage() {
         await deletePedido(id);
         setSuccess('Pedido excluído com sucesso');
         carregarPedidos();
-      } catch {
-        setError('Erro ao excluir pedido');
+      } catch (err) {
+        console.error('Erro ao excluir pedido:', err);
+        setError(`Erro ao excluir pedido: ${err.message || 'Erro desconhecido'}`);
       } finally {
         setLoading(false);
       }
@@ -198,6 +203,7 @@ function PedidosPage() {
         <Typography variant="h4" gutterBottom>Gestão de Pedidos</Typography>
       </Box>
 
+      {/* Exibindo mensagens de sucesso e erro */}
       {error && <Snackbar open autoHideDuration={6000}><Alert severity="error">{error}</Alert></Snackbar>}
       {success && <Snackbar open autoHideDuration={6000}><Alert severity="success">{success}</Alert></Snackbar>}
 
@@ -226,7 +232,6 @@ function PedidosPage() {
               ))}
             </TextField>
           </Grid>
-          
           <Grid item xs={12} sm={3}>
             <TextField
               label="Data do Pedido" type="datetime-local" name="data_pedido" fullWidth required
@@ -235,12 +240,9 @@ function PedidosPage() {
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          
-        
-          
         </Grid>
         <Box mt={2}>
-        <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={3}>
             <TextField
               label="Pratos"
               select
@@ -255,9 +257,8 @@ function PedidosPage() {
                 <MenuItem key={prato.id_prato} value={prato.id_prato}>{prato.nome}</MenuItem>
               ))}
             </TextField>
-            
           </Grid>
-          </Box>
+        </Box>
         <Box mt={2}>
           <Button type="submit" variant="contained" color="primary" disabled={loading}>
             {loading ? <CircularProgress size={24} /> : (modoEdicao ? 'Atualizar Pedido' : 'Adicionar Pedido')}
