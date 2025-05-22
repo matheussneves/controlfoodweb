@@ -9,6 +9,7 @@ import axios from 'axios';
 interface ItemEstoque {
   id: string; // ou number, depende da sua API
   quantidade: number;
+  quantidade_minima: number; // Adicionei essa propriedade para fazer a comparação
   ingrediente_Id_ingrediente: string; // Relacionamento com o ingrediente
 }
 
@@ -20,8 +21,7 @@ interface Ingrediente {
 export default function CardAlert() {
   const [lowStockItems, setLowStockItems] = useState<ItemEstoque[]>([]); // Itens de estoque
   const [ingredientes, setIngredientes] = useState<Ingrediente[]>([]); // Ingredientes
-  const [error, setErro
-    r] = useState<string | null>(null); // Para exibir erros
+  const [error, setError] = useState<string | null>(null); // Para exibir erros
 
   useEffect(() => {
     // Função para buscar os dados do estoque e dos ingredientes
