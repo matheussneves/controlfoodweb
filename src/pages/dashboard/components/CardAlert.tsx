@@ -20,7 +20,8 @@ interface Ingrediente {
 export default function CardAlert() {
   const [lowStockItems, setLowStockItems] = useState<ItemEstoque[]>([]); // Itens de estoque
   const [ingredientes, setIngredientes] = useState<Ingrediente[]>([]); // Ingredientes
-  const [error, setError] = useState<string | null>(null); // Para exibir erros
+  const [error, setErro
+    r] = useState<string | null>(null); // Para exibir erros
 
   useEffect(() => {
     // Função para buscar os dados do estoque e dos ingredientes

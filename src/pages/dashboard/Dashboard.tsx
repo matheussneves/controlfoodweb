@@ -104,35 +104,7 @@ export default function Dashboard(props) {
   const { userid } = useAuth();
   const navigate = useNavigate();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  // Dados simulados (em breve virão da API)
-  const lucroBruto = 20000;
-  const lucroLiquido = 17000;
-  const pedidosPendentes = 5;
-  const pedidosConcluidos = 50;
-
-  const chartData = React.useMemo(() => [
-    { name: 'Jan', ganhos: 4000 },
-    { name: 'Fev', ganhos: 3000 },
-    { name: 'Mar', ganhos: 2000 },
-    { name: 'Abr', ganhos: 2780 },
-  ], []);
-
-  const renderComponent = () => {
-    switch (selectedComponent) {
-      case 'Pedidos': return <PagePedidos />;
-      case 'Entrega': return <EntregasPage />;
-      case 'Pratos': return <PratosPage />;
-      case 'Estoque': return <EstoquePage />;
-      case 'Ingredientes': return <IngredientesPage />;
-      case 'Clientes': return <ClientesPage />;
-      case 'Usuarios': return <UserPage />;
-      case 'Entregadores': return <EntregadoresPage />;
-      default: return <MainGrid />;
-    }
-  };
-
+  // Verifica se o usuário está logado
   if (!userid) {
     return (
       <AppTheme {...props} themeComponents={xThemeComponents}>
@@ -149,10 +121,6 @@ export default function Dashboard(props) {
     );
   }
 
-=======
->>>>>>> 10395ff (Ajuste no CardAlert, PratosPage, PagePedidos)
-=======
->>>>>>> 10395ff (Ajuste no CardAlert, PratosPage, PagePedidos)
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
