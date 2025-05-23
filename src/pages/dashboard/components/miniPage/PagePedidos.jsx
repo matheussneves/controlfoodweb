@@ -20,10 +20,9 @@ function PedidosPage() {
     cliente_id_cliente: '',
     entregador_id_entregador: '',
     usuarios_id_usuario: userid,
-    pratos_id_prato: '',
+    pratos_id_prato: [],
     data_pedido: '',
     tempo_estimado: '',
-    entrega_id_entrega: '',
     status: '',
   });
   const [modoEdicao, setModoEdicao] = useState(false);
@@ -97,31 +96,42 @@ function PedidosPage() {
     event.preventDefault();
     setLoading(true);
 
-    // Verificando o estado do pedido antes de enviar
-    console.log('Pedido Atual:', pedidoAtual);
-
-    if (!pedidoAtual.entrega_id_entrega) {
-      pedidoAtual.entrega_id_entrega = `ENT-${Math.floor(Math.random() * 10000)}`;
-    }
-
     try {
+      const endereco = clientes.find(c => c.id_cliente === pedidoAtual.cliente_id_cliente)?.endereco || 'Endereço não informado';
+
+      const pratosArray = Array.isArray(pedidoAtual.pratos_id_prato)
+        ? pedidoAtual.pratos_id_prato.map(id => ({ id_prato: id }))
+        : [{ id_prato: pedidoAtual.pratos_id_prato }];
+
+      const payload = {
+        cliente_id_cliente: pedidoAtual.cliente_id_cliente,
+        entregador_id_entregador: pedidoAtual.entregador_id_entregador,
+        usuarios_id_usuario: userid,
+        data_pedido: pedidoAtual.data_pedido,
+        tempo_estimado: pedidoAtual.tempo_estimado || '30',
+        entrega: {
+          data_retirada: pedidoAtual.data_pedido,
+          data_entrega: pedidoAtual.data_pedido,
+          endereco
+        },
+        pratos: pratosArray
+      };
+
       if (modoEdicao) {
-        await updatePedido(pedidoId, pedidoAtual);
+        await updatePedido(pedidoId, payload);
         setSuccess('Pedido atualizado com sucesso');
       } else {
-        await createPedido(pedidoAtual);
+        await createPedido(payload);
         setSuccess('Pedido adicionado com sucesso');
       }
 
-      // Limpa o formulário e recarrega os pedidos
       setPedidoAtual({
         cliente_id_cliente: '',
         entregador_id_entregador: '',
         usuarios_id_usuario: userid,
-        pratos_id_prato: '',
+        pratos_id_prato: [],
         data_pedido: '',
         tempo_estimado: '',
-        entrega_id_entrega: '',
         status: '',
       });
       setModoEdicao(false);
@@ -135,13 +145,38 @@ function PedidosPage() {
     }
   };
 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    if (name === 'pratos_id_prato') {
+      const selected = Array.isArray(value) ? value : [value];
+      const pratoSelecionado = pratos.find((prato) => prato.id_prato === selected[0]);
+      const tempoEstimado = pratoSelecionado ? pratoSelecionado.tempo : '';
+
+      setPedidoAtual((prev) => ({
+        ...prev,
+        pratos_id_prato: selected,
+        tempo_estimado: tempoEstimado,
+      }));
+    } else {
+      setPedidoAtual((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
   const handleEdit = async (id) => {
     setLoading(true);
     try {
       const pedido = await getPedidoById(id);
+      const pratos = pedido.Pratos ? [pedido.Pratos.id_prato] : [];
+
       setPedidoAtual({
-        ...pedido,
+        cliente_id_cliente: pedido.pedido?.cliente_id_cliente,
+        entregador_id_entregador: pedido.pedido?.entregador_id_entregador,
         usuarios_id_usuario: userid,
+        pratos_id_prato: pratos,
+        data_pedido: pedido.pedido?.data_pedido,
+        tempo_estimado: pedido.pedido?.tempo_estimado,
+        status: pedido.pedido?.status,
       });
       setModoEdicao(true);
       setPedidoId(id);
@@ -169,80 +204,64 @@ function PedidosPage() {
     }
   };
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    if (name === 'pratos_id_prato') {
-      const pratoSelecionado = pratos.find((prato) => prato.id_prato === value);
-      const tempoEstimado = pratoSelecionado ? pratoSelecionado.tempo_preparo : '';
-      setPedidoAtual((prev) => ({
-        ...prev,
-        pratos_id_prato: value,
-        tempo_estimado: tempoEstimado,
-      }));
-    } else {
-      setPedidoAtual((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const filteredClientes = clientes.filter((cliente) =>
-    cliente.nome.toLowerCase().includes(searchCliente.toLowerCase())
-  );
-
-  const filteredPratos = pratos.filter((prato) =>
-    prato.nome.toLowerCase().includes(searchPrato.toLowerCase())
-  );
-
-  const filteredEntregadores = deliverers.filter((deliverer) =>
-    deliverer.nome.toLowerCase().includes(searchEntregador.toLowerCase())
-  );
-
   return (
     <Container>
-      <Box my={6}>
+      <Box my={4}>
         <Typography variant="h4" gutterBottom>Gestão de Pedidos</Typography>
       </Box>
 
-      {/* Exibindo mensagens de sucesso e erro */}
       {error && <Snackbar open autoHideDuration={6000}><Alert severity="error">{error}</Alert></Snackbar>}
       {success && <Snackbar open autoHideDuration={6000}><Alert severity="success">{success}</Alert></Snackbar>}
 
       <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
-        <Typography variant="h6" gutterBottom>Cadastrar Pedido</Typography>
+        <Typography variant="h6" gutterBottom>{modoEdicao ? 'Editar Pedido' : 'Novo Pedido'}</Typography>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={4}>
             <TextField
-              label="Cliente" select name="cliente_id_cliente" fullWidth required
+              label="Cliente"
+              select
+              name="cliente_id_cliente"
+              fullWidth
+              required
               value={pedidoAtual.cliente_id_cliente}
               onChange={handleChange}
             >
-              {filteredClientes.map((cliente) => (
+              {clientes.map((cliente) => (
                 <MenuItem key={cliente.id_cliente} value={cliente.id_cliente}>{cliente.nome}</MenuItem>
               ))}
             </TextField>
           </Grid>
-          <Grid item xs={12} sm={3}>
+
+          <Grid item xs={12} sm={4}>
             <TextField
-              label="Entregador" select name="entregador_id_entregador" fullWidth required
-              value={pedidoAtual.entregador_id_entregador || ''}
+              label="Entregador"
+              select
+              name="entregador_id_entregador"
+              fullWidth
+              required
+              value={pedidoAtual.entregador_id_entregador}
               onChange={handleChange}
             >
-              {deliverers.map((deliverer) => (
-                <MenuItem key={deliverer.id_entregador} value={deliverer.id_entregador}>{deliverer.nome}</MenuItem>
+              {deliverers.map((entregador) => (
+                <MenuItem key={entregador.id_entregador} value={entregador.id_entregador}>{entregador.nome}</MenuItem>
               ))}
             </TextField>
           </Grid>
-          <Grid item xs={12} sm={3}>
+
+          <Grid item xs={12} sm={4}>
             <TextField
-              label="Data do Pedido" type="datetime-local" name="data_pedido" fullWidth required
+              label="Data do Pedido"
+              type="datetime-local"
+              name="data_pedido"
+              fullWidth
+              required
               value={pedidoAtual.data_pedido}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-        </Grid>
-        <Box mt={2}>
-          <Grid item xs={12} sm={3}>
+
+          <Grid item xs={12}>
             <TextField
               label="Pratos"
               select
@@ -250,15 +269,16 @@ function PedidosPage() {
               fullWidth
               required
               SelectProps={{ multiple: true }}
-              value={pedidoAtual.pratos_id_prato || []}
+              value={pedidoAtual.pratos_id_prato}
               onChange={handleChange}
             >
-              {filteredPratos.map((prato) => (
+              {pratos.map((prato) => (
                 <MenuItem key={prato.id_prato} value={prato.id_prato}>{prato.nome}</MenuItem>
               ))}
             </TextField>
           </Grid>
-        </Box>
+        </Grid>
+
         <Box mt={2}>
           <Button type="submit" variant="contained" color="primary" disabled={loading}>
             {loading ? <CircularProgress size={24} /> : (modoEdicao ? 'Atualizar Pedido' : 'Adicionar Pedido')}
@@ -266,51 +286,29 @@ function PedidosPage() {
         </Box>
       </Box>
 
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h6" gutterBottom>Buscar Pedido</Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={4}>
-            <TextField label="Buscar Cliente" fullWidth value={searchCliente} onChange={(e) => setSearchCliente(e.target.value)} />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField label="Buscar Prato" fullWidth value={searchPrato} onChange={(e) => setSearchPrato(e.target.value)} />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField label="Buscar Entregador" fullWidth value={searchEntregador} onChange={(e) => setSearchEntregador(e.target.value)} />
-          </Grid>
-        </Grid>
-      </Box>
-
-      <Box sx={{ mt: 4 }}>
+      <Box mt={4}>
+        <Typography variant="h6" gutterBottom>Pedidos Cadastrados</Typography>
         <TableContainer>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>Cliente</TableCell>
                 <TableCell>Entregador</TableCell>
-                <TableCell>Prato</TableCell>
-                <TableCell>Data do Pedido</TableCell>
-                <TableCell>Tempo Estimado</TableCell>
-                <TableCell>Status</TableCell>
+                <TableCell>Pratos</TableCell>
+                <TableCell>Data</TableCell>
                 <TableCell>Ações</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {pedidos.map((pedido) => (
                 <TableRow key={pedido.id_pedido}>
-                  <TableCell>{pedido.cliente?.nome}</TableCell>
-                  <TableCell>{pedido.entregador?.nome}</TableCell>
-                  <TableCell>
-                    {Array.isArray(pedido.prato)
-                      ? pedido.prato.map((p) => p.nome).join(', ')
-                      : pedido.prato?.nome}
-                  </TableCell>
+                  <TableCell>{pedido.nome_cliente}</TableCell>
+                  <TableCell>{pedido.nome_entregador}</TableCell>
+                  <TableCell>{pedido.prato?.nome || '-'}</TableCell>
                   <TableCell>{pedido.data_pedido}</TableCell>
-                  <TableCell>{pedido.tempo_estimado}</TableCell>
-                  <TableCell>{pedido.status}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleEdit(pedido.id_pedido)} color="primary"><Edit /></IconButton>
-                    <IconButton onClick={() => handleDelete(pedido.id_pedido)} color="secondary"><Delete /></IconButton>
+                    <IconButton color="primary" onClick={() => handleEdit(pedido.id_pedido)}><Edit /></IconButton>
+                    <IconButton color="secondary" onClick={() => handleDelete(pedido.id_pedido)}><Delete /></IconButton>
                   </TableCell>
                 </TableRow>
               ))}

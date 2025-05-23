@@ -5,7 +5,6 @@ import {
   TableContainer, Table, TableHead, TableRow,
   TableCell, TableBody, IconButton, MenuItem
 } from '@mui/material';
-import { MultiSelect } from 'primereact/multiselect';
 import { Edit, Delete } from '@mui/icons-material';
 import {
   getPratos,
@@ -16,12 +15,11 @@ import {
   getEstoques// <-- Adicione esta importação
 } from '../../../../apis/requests';
 
-// Constantes de prato vazio para iniciar a criação ou edição
 const pratoVazio = {
   nome: '',
   descricao: '',
-  preco: '',
-  tempo: '',
+  preco: 0,
+  tempo: 0,
 };
 
 function PratosPage() {
@@ -37,13 +35,13 @@ function PratosPage() {
   useEffect(() => {
     carregarPratos();
     carregarIngredientes();
+    carregarEstoque();
   }, []);
 
-  // Função para carregar os pratos
   const carregarPratos = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get('https://controlfoodapi-d8a49e8667a8.herokuapp.com/pratos');
+      const data = await getPratos();
       setPratos(data);
     } catch {
       setError('Erro ao carregar pratos');
@@ -52,15 +50,10 @@ function PratosPage() {
     }
   };
 
-  // Função para carregar os ingredientes
   const carregarIngredientes = async () => {
     try {
-      const response = await axios.get('https://controlfoodapi-d8a49e8667a8.herokuapp.com/ingredientes');
-      const ops = response.data.map(item => ({
-        label: item.descricao,
-        value: item,
-      }));
-      setIngredientes(ops);
+      const data = await getIngredientes();
+      setIngredientes(data);
     } catch {
       setError('Erro ao carregar ingredientes');
     }
@@ -75,7 +68,6 @@ function PratosPage() {
     }
   };
 
-  // Função de submit (salvar prato)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -96,8 +88,8 @@ function PratosPage() {
   
       
       const body = {
-        ...pratoAtual,  // Inclui todos os dados do prato
-        ingredientes: listaApi,  // Passa os ingredientes com a quantidade e medida
+        ...pratoAtual,
+        ingredientes: listaApi,
       };
  console.log('body ', JSON.stringify(body));
       if (pratoAtual.id_prato) {
@@ -109,7 +101,6 @@ function PratosPage() {
         setSuccess('Prato salvo com sucesso');
       }
 
-      // Resetando os estados para criar ou editar outro prato
       setPratoAtual(pratoVazio);
       setIngredientesSelecionados([]);
       carregarPratos();
@@ -120,7 +111,6 @@ function PratosPage() {
     }
   };
 
-  // Função para tratar mudanças no input do prato
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPratoAtual(prev => ({ ...prev, [name]: value }));
@@ -134,7 +124,6 @@ function PratosPage() {
     setIngredientesSelecionados(selectedIds);
   };
 
-  // Função para editar um prato existente
   const handleEdit = (id) => {
     const prato = pratos.find(p => p.id_prato === id);
     if (prato) {
@@ -145,10 +134,9 @@ function PratosPage() {
     }
   };
 
-  // Função para excluir um prato
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:21229/pratos/${id}`);
+      await deletePrato(id);
       setSuccess('Prato excluído com sucesso');
       carregarPratos();
     } catch {
@@ -156,7 +144,7 @@ function PratosPage() {
     }
   };
 
-  // Função para tratar a mudança no preço (convertendo para número)
+  // Função para formatar o preço corretamente
   const handlePriceChange = (e) => {
     const { value } = e.target;
     const numericValue = value.replace('R$', '').replace(/\D/g, '');
@@ -166,17 +154,15 @@ function PratosPage() {
     }));
   };
 
+
   return (
     <Container>
       <Box my={4}>
         <Typography variant="h4">Gestão de Pratos</Typography>
       </Box>
-
-      {/* Exibe mensagens de erro e sucesso */}
       {error && <Snackbar open autoHideDuration={6000}><Alert severity="error">{error}</Alert></Snackbar>}
       {success && <Snackbar open autoHideDuration={6000}><Alert severity="success">{success}</Alert></Snackbar>}
 
-      {/* Formulário para criar ou editar um prato */}
       <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
@@ -243,13 +229,12 @@ function PratosPage() {
         </Grid>
 
         <Box mt={2}>
-          <Button type="submit" variant="contained" disabled={loading}>
+          <Button type="submit" variant="contained" disabled={loading} onClick={handleSubmit}>
             {loading ? <CircularProgress size={24} /> : 'Salvar Prato'}
           </Button>
         </Box>
       </Box>
 
-      {/* Tabela de pratos */}
       <TableContainer>
         <Table>
           <TableHead>
