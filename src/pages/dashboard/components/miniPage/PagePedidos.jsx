@@ -36,9 +36,9 @@ function PedidosPage() {
 
   useEffect(() => {
     carregarPedidos();
-    carregarPratos();
+carregarPratos();
     carregarClientes();
-    carregarDeliverers();
+carregarDeliverers();
   }, []);
 
   useEffect(() => {
@@ -116,6 +116,8 @@ function PedidosPage() {
         },
         pratos: pratosArray
       };
+      console.log('Payload:', payload);
+      console.log('pedidoId', pedidoId);
 
       if (modoEdicao) {
         await updatePedido(pedidoId, payload);
@@ -137,6 +139,7 @@ function PedidosPage() {
       setModoEdicao(false);
       setPedidoId(null);
       carregarPedidos();
+      setModoEdicao(true);
     } catch (err) {
       console.error('Erro ao salvar pedido:', err);
       setError(`Erro ao salvar pedido: ${err.message || 'Erro desconhecido'}`);
@@ -166,17 +169,17 @@ function PedidosPage() {
   const handleEdit = async (id) => {
     setLoading(true);
     try {
-      const pedido = await getPedidoById(id);
-      const pratos = pedido.Pratos ? [pedido.Pratos.id_prato] : [];
+      const pedido = pedidos.find(p => p.id_pedido === id);
+      const pratos = pedido.pratos.map(p => p.id_prato);
 
       setPedidoAtual({
-        cliente_id_cliente: pedido.pedido?.cliente_id_cliente,
-        entregador_id_entregador: pedido.pedido?.entregador_id_entregador,
+        cliente_id_cliente: pedido.cliente_id_cliente,
+        entregador_id_entregador: pedido.entregador_id_entregador,
         usuarios_id_usuario: userid,
         pratos_id_prato: pratos,
-        data_pedido: pedido.pedido?.data_pedido,
-        tempo_estimado: pedido.pedido?.tempo_estimado,
-        status: pedido.pedido?.status,
+        data_pedido: pedido.data_pedido,
+        tempo_estimado: pedido.tempo_estimado,
+        status: pedido.status,
       });
       setModoEdicao(true);
       setPedidoId(id);
@@ -187,6 +190,8 @@ function PedidosPage() {
       setLoading(false);
     }
   };
+
+
 
   const handleDelete = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este pedido?')) {
@@ -205,16 +210,32 @@ function PedidosPage() {
   };
 
   return (
-    <Container>
+    <Container maxWidth="lg">
       <Box my={4}>
         <Typography variant="h4" gutterBottom>Gestão de Pedidos</Typography>
       </Box>
 
-      {error && <Snackbar open autoHideDuration={6000}><Alert severity="error">{error}</Alert></Snackbar>}
-      {success && <Snackbar open autoHideDuration={6000}><Alert severity="success">{success}</Alert></Snackbar>}
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={() => setError('')}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity="error" onClose={() => setError('')}>{error}</Alert>
+      </Snackbar>
+      <Snackbar
+        open={!!success}
+        autoHideDuration={6000}
+        onClose={() => setSuccess('')}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity="success" onClose={() => setSuccess('')}>{success}</Alert>
+      </Snackbar>
 
-      <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
-        <Typography variant="h6" gutterBottom>{modoEdicao ? 'Editar Pedido' : 'Novo Pedido'}</Typography>
+      <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4, p: 3, bgcolor: '#fafafa', borderRadius: 2, boxShadow: 1 }}>
+        <Typography variant="h6" gutterBottom>
+          {modoEdicao ? 'Editar Pedido' : 'Novo Pedido'}
+        </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
             <TextField
@@ -225,8 +246,10 @@ function PedidosPage() {
               required
               value={pedidoAtual.cliente_id_cliente}
               onChange={handleChange}
+              size="small"
             >
               {clientes.map((cliente) => (
+                
                 <MenuItem key={cliente.id_cliente} value={cliente.id_cliente}>{cliente.nome}</MenuItem>
               ))}
             </TextField>
@@ -241,8 +264,10 @@ function PedidosPage() {
               required
               value={pedidoAtual.entregador_id_entregador}
               onChange={handleChange}
+              size="small"
             >
               {deliverers.map((entregador) => (
+                
                 <MenuItem key={entregador.id_entregador} value={entregador.id_entregador}>{entregador.nome}</MenuItem>
               ))}
             </TextField>
@@ -258,6 +283,7 @@ function PedidosPage() {
               value={pedidoAtual.data_pedido}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
+              size="small"
             />
           </Grid>
 
@@ -271,6 +297,7 @@ function PedidosPage() {
               SelectProps={{ multiple: true }}
               value={pedidoAtual.pratos_id_prato}
               onChange={handleChange}
+              size="small"
             >
               {pratos.map((prato) => (
                 <MenuItem key={prato.id_prato} value={prato.id_prato}>{prato.nome}</MenuItem>
@@ -280,15 +307,43 @@ function PedidosPage() {
         </Grid>
 
         <Box mt={2}>
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
+            sx={{ minWidth: 180 }}
+          >
             {loading ? <CircularProgress size={24} /> : (modoEdicao ? 'Atualizar Pedido' : 'Adicionar Pedido')}
           </Button>
+          {modoEdicao && (
+            <Button
+              sx={{ ml: 2 }}
+              variant="outlined"
+              color="secondary"
+              onClick={() => {
+                setModoEdicao(false);
+                setPedidoAtual({
+                  cliente_id_cliente: '',
+                  entregador_id_entregador: '',
+                  usuarios_id_usuario: userid,
+                  pratos_id_prato: [],
+                  data_pedido: '',
+                  tempo_estimado: '',
+                  status: '',
+                });
+                setPedidoId(null);
+              }}
+            >
+              Cancelar
+            </Button>
+          )}
         </Box>
       </Box>
 
       <Box mt={4}>
         <Typography variant="h6" gutterBottom>Pedidos Cadastrados</Typography>
-        <TableContainer>
+        <TableContainer sx={{ bgcolor: '#fff', borderRadius: 2, boxShadow: 1 }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -296,22 +351,42 @@ function PedidosPage() {
                 <TableCell>Entregador</TableCell>
                 <TableCell>Pratos</TableCell>
                 <TableCell>Data</TableCell>
-                <TableCell>Ações</TableCell>
+                <TableCell align="center">Ações</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {pedidos.map((pedido) => (
-                <TableRow key={pedido.id_pedido}>
-                  <TableCell>{pedido.nome_cliente}</TableCell>
-                  <TableCell>{pedido.nome_entregador}</TableCell>
-                  <TableCell>{pedido.prato?.nome || '-'}</TableCell>
-                  <TableCell>{pedido.data_pedido}</TableCell>
-                  <TableCell>
-                    <IconButton color="primary" onClick={() => handleEdit(pedido.id_pedido)}><Edit /></IconButton>
-                    <IconButton color="secondary" onClick={() => handleDelete(pedido.id_pedido)}><Delete /></IconButton>
+              {pedidos.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                    Nenhum pedido cadastrado.
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                pedidos.map((pedido) => (
+                  <TableRow key={pedido.id_pedido}>
+                    <TableCell>{pedido.nome_cliente}</TableCell>
+                    <TableCell>{pedido.nome_entregador}</TableCell>
+                    <TableCell>
+                      {Array.isArray(pedido.pratos)
+                        ? pedido.pratos.map((p) => p.nome).join(', ')
+                        : pedido.prato?.nome || '-'}
+                    </TableCell>
+                    <TableCell>
+                      {pedido.data_pedido
+                        ? new Date(pedido.data_pedido).toLocaleString('pt-BR')
+                        : '-'}
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton color="primary" onClick={() => handleEdit(pedido.id_pedido)}>
+                        <Edit />
+                      </IconButton>
+                      <IconButton color="error" onClick={() => handleDelete(pedido.id_pedido)}>
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

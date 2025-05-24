@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://controlfoodapi-d8a49e8667a8.herokuapp.com';
+const API_BASE_URL = 'https://controlfoodapi-d8a49e8667a8.herokuapp.com/api';
 
 const headers = {
   'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ const apiRequest = async (endpoint, method = 'GET', body = null) => {
 
 // Autenticação
 export const loginApi = (email, password) => {
-  return apiRequest('/login', 'POST', { login: email, senha: password });
+  return apiRequest('/login', 'POST', { email: email, senha: password });
 };
 
 // Usuários

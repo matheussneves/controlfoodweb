@@ -54,8 +54,6 @@ const UserPage = () => {
     } else {
       const response = await createUser(userData);
 
-      console.log('Resposta do createUser:', response);
-
       // Agora aceita só a mensagem 'Usuário criado' como sucesso
       if (response?.message !== 'Usuário criado') {
         throw new Error('Erro ao criar usuário');

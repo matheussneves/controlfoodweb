@@ -15,7 +15,6 @@ import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 const mainListItems = [
   { text: 'Home', icon: <HomeRoundedIcon />, component: 'MainGrid' },
   { text: 'Pedidos', icon: <AnalyticsRoundedIcon />, component: 'PagePedidos' },
-  { text: 'Entrega', icon: <AssignmentRoundedIcon />, component: 'EntregasPage' },
   { text: 'Pratos', icon: <AssignmentRoundedIcon />, component: 'PratosPage' },
   { text: 'Estoque', icon: <AssignmentRoundedIcon />, component: 'EstoquePage' },
   { text: 'Ingredientes', icon: <AssignmentRoundedIcon />, component: 'IngredientesPage' },
