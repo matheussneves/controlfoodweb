@@ -4,196 +4,110 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
-async function apiRequest(endpoint, method = 'GET', body = null) {
-  const options = {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : null,
-  };
-
+const apiRequest = async (endpoint, method = 'GET', body = null) => {
   try {
+    const options = {
+      method,
+      headers,
+    };
+
+    // Só adiciona body para métodos que aceitam corpo (POST, PUT, PATCH)
+    if (body && ['POST', 'PUT', 'PATCH'].includes(method.toUpperCase())) {
+      options.body = JSON.stringify(body);
+    }
+
     const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
-    const contentType = response.headers.get('content-type');
+
+    const responseText = await response.text();
+
     if (!response.ok) {
-    let errorText = await response.text();
-    throw new Error(errorText);
-  }
-  if (contentType && contentType.includes('application/json')) {
-    return await response.json();
-  } else {
-    return await response.text();
-  };
+      try {
+        const errorData = JSON.parse(responseText);
+        console.error('Erro na requisição:', errorData);
+        throw new Error(errorData.message || 'Erro na requisição');
+      } catch {
+        console.error('Erro na requisição:', responseText);
+        throw new Error(responseText);
+      }
+    }
+
+    try {
+      return JSON.parse(responseText);
+    } catch {
+      return { message: responseText };
+    }
+
   } catch (error) {
-    console.error('Erro ao fazer requisição:', error);
-    throw error;
+    console.error('Erro na apiRequest:', error);
+    throw new Error(error.message || 'Erro desconhecido na API');
   }
-}
+};
 
 // Autenticação
-export function loginApi(email, password) {
+export const loginApi = (email, password) => {
   return apiRequest('/login', 'POST', { login: email, senha: password });
-}
+};
 
 // Usuários
-export function createUser(data) {
-  return apiRequest('/usuarios', 'POST', data);
-}
-export function getUsers() {
-  return apiRequest('/usuarios', 'GET');
-}
-export function getUserById(id) {
-  return apiRequest(`/usuarios/${id}`, 'GET');
-}
-export function updateUser(id, data) {
-  return apiRequest(`/usuarios/${id}`, 'PUT', data);
-}
-export function deleteUser(id) {
-  return apiRequest(`/usuarios/${id}`, 'DELETE');
-}
+export const createUser = (data) => apiRequest('/usuarios', 'POST', data);
+export const getUsers = () => apiRequest('/usuarios', 'GET');
+export const getUserById = (id) => apiRequest(`/usuarios/${id}`, 'GET');
+export const updateUser = (id, data) => apiRequest(`/usuarios/${id}`, 'PUT', data);
+export const deleteUser = (id) => apiRequest(`/usuarios/${id}`, 'DELETE');
 
-// Ingredientes (POST retorna texto)
-export function createIngrediente(data) {
-  return apiRequest('/ingredientes', 'POST', data);
-}
-export function getIngredientes() {
-  return apiRequest('/ingredientes', 'GET');
-}
-export function getIngredienteById(id) {
-  return apiRequest(`/ingredientes/${id}`, 'GET');
-}
-export function updateIngrediente(id, data) {
-  return apiRequest(`/ingredientes/${id}`, 'PUT', data);
-}
-export function deleteIngrediente(id) {
-  return apiRequest(`/ingredientes/${id}`, 'DELETE');
-}
+// Ingredientes
+export const createIngrediente = (data) => apiRequest('/ingredientes', 'POST', data);
+export const getIngredientes = () => apiRequest('/ingredientes', 'GET');
+export const getIngredienteById = (id) => apiRequest(`/ingredientes/${id}`, 'GET');
+export const updateIngrediente = (id, data) => apiRequest(`/ingredientes/${id}`, 'PUT', data);
+export const deleteIngrediente = (id) => apiRequest(`/ingredientes/${id}`, 'DELETE');
 
 // Histórico
-export function createHistorico(data) {
-  return apiRequest('/historico', 'POST', data);
-}
-export function getHistoricos() {
-  return apiRequest('/historico', 'GET');
-}
-export function getHistoricoById(id) {
-  return apiRequest(`/historico/${id}`, 'GET');
-}
-export function updateHistorico(id, data) {
-  return apiRequest(`/historico/${id}`, 'PUT', data);
-}
-export function deleteHistorico(id) {
-  return apiRequest(`/historico/${id}`, 'DELETE');
-}
+export const createHistorico = (data) => apiRequest('/historico', 'POST', data);
+export const getHistoricos = () => apiRequest('/historico', 'GET');
+export const getHistoricoById = (id) => apiRequest(`/historico/${id}`, 'GET');
+export const updateHistorico = (id, data) => apiRequest(`/historico/${id}`, 'PUT', data);
+export const deleteHistorico = (id) => apiRequest(`/historico/${id}`, 'DELETE');
 
 // Estoque
-export function createEstoque(data) {
-  return apiRequest('/estoque', 'POST', data);
-}
-export function getEstoques() {
-  return apiRequest('/estoque', 'GET');
-}
-export function getEstoqueById(id) {
-  return apiRequest(`/estoque/${id}`, 'GET');
-}
-export function updateEstoque(id, data) {
-  return apiRequest(`/estoque/${id}`, 'PUT', data);
-}
-export function deleteEstoque(id) {
-  return apiRequest(`/estoque/${id}`, 'DELETE');
-}
+export const createEstoque = (data) => apiRequest('/estoque', 'POST', data);
+export const getEstoques = () => apiRequest('/estoque', 'GET');
+export const getEstoqueById = (id) => apiRequest(`/estoque/${id}`, 'GET');
+export const updateEstoque = (id, data) => apiRequest(`/estoque/${id}`, 'PUT', data);
+export const deleteEstoque = (id) => apiRequest(`/estoque/${id}`, 'DELETE');
 
 // Pratos
 
-// Criar prato
-export function createPrato(data) {
-  // data deve ser: { nome, descricao, preco, tempo, ingredientes: [{ id_ingrediente, quantidade, medida }] }
-  return apiRequest('/pratos', 'POST', data);
-}
+export const createPrato = (data) => apiRequest('/pratos', 'POST', data);
+export const getPratos = () => apiRequest('/pratos', 'GET');
+export const getPratoById = (id) => apiRequest(`/pratos/${id}`, 'GET');
+export const updatePrato = (id, data) => apiRequest(`/pratos/${id}`, 'PUT', data);
+export const deletePrato = (id) => apiRequest(`/pratos/${id}`, 'DELETE');
 
-// Listar todos os pratos
-export function getPratos() {
-  return apiRequest('/pratos', 'GET');
-}
 
-// Buscar prato por ID
-export function getPratoById(id) {
-  return apiRequest(`/pratos/${id}`, 'GET');
-}
-
-// Atualizar prato por ID
-export function updatePrato(id, data) {
-  // data deve ser: { nome, descricao, preco, tempo, ingredientes: [{ id_ingrediente, quantidade, medida }] }
-  return apiRequest(`/pratos/${id}`, 'PUT', data);
-}
-
-// Remover prato por ID
-export function deletePrato(id) {
-  return apiRequest(`/pratos/${id}`, 'DELETE');
-}
 // Clientes
-export function createCliente(data) {
-  return apiRequest('/clientes', 'POST', data);
-}
-export function getClientes() {
-  return apiRequest('/clientes', 'GET');
-}
-export function getClienteById(id) {
-  return apiRequest(`/clientes/${id}`, 'GET');
-}
-export function updateCliente(id, data) {
-  return apiRequest(`/clientes/${id}`, 'PUT', data);
-}
-export function deleteCliente(id) {
-  return apiRequest(`/clientes/${id}`, 'DELETE');
-}
+export const createCliente = (data) => apiRequest('/clientes', 'POST', data);
+export const getClientes = () => apiRequest('/clientes', 'GET');
+export const getClienteById = (id) => apiRequest(`/clientes/${id}`, 'GET');
+export const updateCliente = (id, data) => apiRequest(`/clientes/${id}`, 'PUT', data);
+export const deleteCliente = (id) => apiRequest(`/clientes/${id}`, 'DELETE');
 
 // Entregadores
-export const getDeliverers = async () => {
-  return apiRequest('/entregadores', 'GET');
-};
-
-export const createDeliverer = async (data) => {
-  return apiRequest('/entregadores', 'POST', data);
-};
-
-export const updateDeliverer = async (id, data) => {
-  return apiRequest(`/entregadores/${id}`, 'PUT', data);
-};
-
-export const deleteDeliverer = async (id) => {
-  return apiRequest(`/entregadores/${id}`, 'DELETE');
-};
+export const getDeliverers = () => apiRequest('/entregadores', 'GET');
+export const createDeliverer = (data) => apiRequest('/entregadores', 'POST', data);
+export const updateDeliverer = (id, data) => apiRequest(`/entregadores/${id}`, 'PUT', data);
+export const deleteDeliverer = (id) => apiRequest(`/entregadores/${id}`, 'DELETE');
 
 // Entregas
-export function createEntrega(data) {
-  return apiRequest('/entrega', 'POST', data);
-}
-export function getEntregas() {
-  return apiRequest('/entregas', 'GET');
-}
-export function getEntregaById(id) {
-  return apiRequest(`/entregas/${id}`, 'GET');
-}
-export function updateEntrega(id, data) {
-  return apiRequest(`/entregas/${id}`, 'PUT', data);
-}
-export function deleteEntrega(id) {
-  return apiRequest(`/entregas/${id}`, 'DELETE');
-}
+export const createEntrega = (data) => apiRequest('/entrega', 'POST', data);
+export const getEntregas = () => apiRequest('/entregas', 'GET');
+export const getEntregaById = (id) => apiRequest(`/entregas/${id}`, 'GET');
+export const updateEntrega = (id, data) => apiRequest(`/entregas/${id}`, 'PUT', data);
+export const deleteEntrega = (id) => apiRequest(`/entregas/${id}`, 'DELETE');
 
 // Pedidos
-export function createPedido(data) {
-  return apiRequest('/pedidos', 'POST', data);
-}
-export function getPedidos() {
-  return apiRequest('/pedidos', 'GET');
-}
-export function getPedidoById(id) {
-  return apiRequest(`/pedidos/${id}`, 'GET');
-}
-export function updatePedido(id, data) {
-  return apiRequest(`/pedidos/${id}`, 'PUT', data);
-}
-export function deletePedido(id) {
-  return apiRequest(`/pedidos/${id}`, 'DELETE');
-}
+export const createPedido = (data) => apiRequest('/pedidos', 'POST', data);
+export const getPedidos = () => apiRequest('/pedidos', 'GET');
+export const getPedidoById = (id) => apiRequest(`/pedidos/${id}`, 'GET');
+export const updatePedido = (id, data) => apiRequest(`/pedidos/${id}`, 'PUT', data);
+export const deletePedido = (id) => apiRequest(`/pedidos/${id}`, 'DELETE');

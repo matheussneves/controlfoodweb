@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Typography, TextField, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Snackbar, Alert, CircularProgress } from '@mui/material';
+import {
+  Container, Box, Typography, TextField, Button, Grid,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  IconButton, Snackbar, Alert, CircularProgress
+} from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { createIngrediente, getIngredientes, getIngredienteById, updateIngrediente, deleteIngrediente } from '../../../../apis/requests';
+import {
+  createIngrediente, getIngredientes, getIngredienteById,
+  updateIngrediente, deleteIngrediente
+} from '../../../../apis/requests';
 
 const ingredienteVazio = {
   descricao: '',
@@ -48,7 +55,8 @@ function IngredientesPage() {
         await updateIngrediente(ingredienteId, payload);
         msg = 'Ingrediente atualizado com sucesso';
       } else {
-        msg = await createIngrediente(payload);
+        await createIngrediente(payload);
+        msg = 'Ingrediente criado com sucesso';
       }
       setSuccess(msg);
       setError('');
@@ -98,12 +106,12 @@ function IngredientesPage() {
       setLoading(false);
     }
   };
-  
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setIngredienteAtual(prev => ({
       ...prev,
-      [name]: name === 'contem_alergicos' ? Number(value) : value
+      [name]: name === 'contem_alergicos' ? Number(value || 0) : value
     }));
   };
 
@@ -183,7 +191,7 @@ function IngredientesPage() {
             </TableHead>
             <TableBody>
               {ingredientes.map(ingrediente => (
-                <TableRow key={ingrediente.Id_ingrediente}>
+                <TableRow key={ingrediente.Id_ingrediente || ingrediente.id || Math.random()}>
                   <TableCell>{ingrediente.descricao}</TableCell>
                   <TableCell>{ingrediente.contem_alergicos}</TableCell>
                   <TableCell>{ingrediente.informacoes_nutricionais}</TableCell>

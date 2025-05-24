@@ -29,6 +29,7 @@ const UserPage = () => {
   useEffect(() => {
     const loadUsers = async () => {
       setLoading(true);
+      setError('');
       try {
         const data = await getUsers();
         setUsers(data);
@@ -42,29 +43,42 @@ const UserPage = () => {
   }, []);
 
   const handleSave = async (userData) => {
-    setLoading(true);
-    try {
-      if (selectedUser) {
-        await updateUser(selectedUser.id, userData);
-      } else {
-        const response = await createUser(userData); // Garante que o await seja respeitado
-        if (!response?.id) throw new Error('Erro ao criar usuário'); // valida resposta
+  setLoading(true);
+  setError('');
+  setSuccess('');
+
+  try {
+    if (selectedUser) {
+      const response = await updateUser(selectedUser.id_usuario, userData);
+      setSuccess('Usuário atualizado com sucesso');
+    } else {
+      const response = await createUser(userData);
+
+      console.log('Resposta do createUser:', response);
+
+      // Agora aceita só a mensagem 'Usuário criado' como sucesso
+      if (response?.message !== 'Usuário criado') {
+        throw new Error('Erro ao criar usuário');
       }
-      const updatedUsers = await getUsers(); // Só chama depois da criação completa
-      setUsers(updatedUsers);
-      setSuccess('Usuário salvo com sucesso.');
-      setSelectedUser(null);
-    } catch (error) {
-      console.error(error);
-      setError('Falha ao salvar o usuário.');
-    } finally {
-      setLoading(false);
+
+      setSuccess('Usuário criado com sucesso');
     }
-  };
+
+    // Aqui outras ações, tipo atualizar lista, fechar modal, etc.
+  } catch (error) {
+    setError(error.message || 'Erro desconhecido');
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   const handleDelete = async (userId) => {
     if (window.confirm('Você tem certeza que deseja excluir este usuário?')) {
       setLoading(true);
+      setError('');
+      setSuccess('');
       try {
         await deleteUser(userId);
         setSuccess('Usuário excluído com sucesso.');
@@ -77,27 +91,37 @@ const UserPage = () => {
     }
   };
 
+  const handleCloseError = () => setError('');
+  const handleCloseSuccess = () => setSuccess('');
+
   return (
     <Container>
       <Box my={4}>
         <Typography variant="h4">Gerenciamento de Usuários</Typography>
       </Box>
 
-      {error && <Snackbar open={true} autoHideDuration={6000}><Alert severity="error">{error}</Alert></Snackbar>}
-      {success && <Snackbar open={true} autoHideDuration={6000}><Alert severity="success">{success}</Alert></Snackbar>}
+      <Snackbar open={!!error} autoHideDuration={6000} onClose={handleCloseError}>
+        <Alert severity="error" onClose={handleCloseError} sx={{ width: '100%' }}>
+          {error}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar open={!!success} autoHideDuration={6000} onClose={handleCloseSuccess}>
+        <Alert severity="success" onClose={handleCloseSuccess} sx={{ width: '100%' }}>
+          {success}
+        </Alert>
+      </Snackbar>
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
-          <UserForm selectedUser={selectedUser} onSave={handleSave} />
+          <UserForm selectedUser={selectedUser} onSave={handleSave} loading={loading} />
         </Grid>
 
         <Grid item xs={12} md={8}>
-          {loading ? <CircularProgress /> : (
-            <UserList
-              users={users}
-              onEdit={(user) => setSelectedUser(user)}
-              onDelete={handleDelete}
-            />
+          {loading && !users.length ? (
+            <CircularProgress />
+          ) : (
+            <UserList users={users} onEdit={setSelectedUser} onDelete={handleDelete} />
           )}
         </Grid>
       </Grid>
@@ -105,7 +129,7 @@ const UserPage = () => {
   );
 };
 
-const UserForm = ({ selectedUser, onSave }) => {
+const UserForm = ({ selectedUser, onSave, loading }) => {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -113,17 +137,16 @@ const UserForm = ({ selectedUser, onSave }) => {
   const [accessDashboard, setAccessDashboard] = useState(false);
   const [accessCreateOrder, setAccessCreateOrder] = useState(false);
   const [accessStock, setAccessStock] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (selectedUser) {
       setNome(selectedUser.nome || '');
       setEmail(selectedUser.email || '');
       setSenha('');
-      setAccessCreateUser(selectedUser.acesso_criar_usuario || false);
-      setAccessDashboard(selectedUser.acesso_dashboard || false);
-      setAccessCreateOrder(selectedUser.acesso_criar_pedido || false);
-      setAccessStock(selectedUser.acesso_estoque || false);
+      setAccessCreateUser(Boolean(selectedUser.acesso_criar_usuario));
+      setAccessDashboard(Boolean(selectedUser.acesso_dashboard));
+      setAccessCreateOrder(Boolean(selectedUser.acesso_criar_pedido));
+      setAccessStock(Boolean(selectedUser.acesso_estoque));
     } else {
       setNome('');
       setEmail('');
@@ -137,22 +160,24 @@ const UserForm = ({ selectedUser, onSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     const userData = {
       nome,
       email,
-      senha: senha || undefined,
+      ...(senha ? { senha } : {}),
       acesso_criar_usuario: accessCreateUser,
       acesso_dashboard: accessDashboard,
       acesso_criar_pedido: accessCreateOrder,
       acesso_estoque: accessStock,
     };
     await onSave(userData);
-    setLoading(false);
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ padding: 2, border: '1px solid #ddd', borderRadius: 2 }}>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ padding: 2, border: '1px solid #ddd', borderRadius: 2 }}
+    >
       <Typography variant="h6">{selectedUser ? 'Editar Usuário' : 'Adicionar Usuário'}</Typography>
       <TextField
         label="Nome"
@@ -178,6 +203,8 @@ const UserForm = ({ selectedUser, onSave }) => {
         onChange={(e) => setSenha(e.target.value)}
         sx={{ mb: 2 }}
         type="password"
+        helperText={selectedUser ? 'Preencha apenas se quiser alterar a senha' : ''}
+        required={!selectedUser} // senha obrigatória só se for criar novo
       />
       <FormControlLabel
         control={<Checkbox checked={accessCreateUser} onChange={(e) => setAccessCreateUser(e.target.checked)} />}
@@ -208,7 +235,7 @@ const UserList = ({ users, onEdit, onDelete }) => {
   return (
     <List>
       {users.map((user) => (
-        <ListItem key={user.id} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <ListItem key={user.id_usuario} sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <ListItemText
             primary={user.nome}
             secondary={`Email: ${user.email}, Permissões: ${[
@@ -222,7 +249,7 @@ const UserList = ({ users, onEdit, onDelete }) => {
             <IconButton onClick={() => onEdit(user)}>
               <Edit />
             </IconButton>
-            <IconButton onClick={() => onDelete(user.id)}>
+            <IconButton onClick={() => onDelete(user.id_usuario)}>
               <Delete />
             </IconButton>
           </Box>
