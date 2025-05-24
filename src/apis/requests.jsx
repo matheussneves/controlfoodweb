@@ -36,6 +36,7 @@ const apiRequest = async (endpoint, method = 'GET', body = null) => {
     } catch {
       return { message: responseText };
     }
+
   } catch (error) {
     console.error('Erro na apiRequest:', error);
     throw new Error(error.message || 'Erro desconhecido na API');
@@ -76,11 +77,13 @@ export const updateEstoque = (id, data) => apiRequest(`/estoque/${id}`, 'PUT', d
 export const deleteEstoque = (id) => apiRequest(`/estoque/${id}`, 'DELETE');
 
 // Pratos
+
 export const createPrato = (data) => apiRequest('/pratos', 'POST', data);
 export const getPratos = () => apiRequest('/pratos', 'GET');
 export const getPratoById = (id) => apiRequest(`/pratos/${id}`, 'GET');
 export const updatePrato = (id, data) => apiRequest(`/pratos/${id}`, 'PUT', data);
 export const deletePrato = (id) => apiRequest(`/pratos/${id}`, 'DELETE');
+
 
 // Clientes
 export const createCliente = (data) => apiRequest('/clientes', 'POST', data);
