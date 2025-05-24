@@ -53,7 +53,6 @@ function ButtonField(props: ButtonFieldProps) {
 
 export default function CustomDatePicker() {
   const [value, setValue] = React.useState<Dayjs | null>(dayjs(`${date.getFullYear()}-${1+date.getMonth()}-${date.getDate()}`));
-  console.log(date.getDate())
   const [open, setOpen] = React.useState(false);
 
   return (

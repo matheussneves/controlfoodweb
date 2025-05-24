@@ -20,7 +20,6 @@ import SideMenu from './components/SideMenu';
 // Páginas do menu
 import MainGrid from './components/MainGrid';
 import PagePedidos from './components/miniPage/PagePedidos';
-import EntregasPage from './components/miniPage/EntregasPage';
 import PratosPage from './components/miniPage/PratosPage';
 import EstoquePage from './components/miniPage/EstoquePage';
 import IngredientesPage from './components/miniPage/IngredientesPage';
@@ -46,6 +45,7 @@ const xThemeComponents = {
 export default function Dashboard(props) {
   const [selectedComponent, setSelectedComponent] = React.useState('MainGrid');
   const { userid } = useAuth();
+  console.log("userid", userid);
   const navigate = useNavigate();
 
   // Dados simulados (em breve virão da API)
@@ -64,7 +64,6 @@ export default function Dashboard(props) {
   const renderComponent = () => {
     switch (selectedComponent) {
       case 'Pedidos': return <PagePedidos />;
-      case 'Entrega': return <EntregasPage />;
       case 'Pratos': return <PratosPage />;
       case 'Estoque': return <EstoquePage />;
       case 'Ingredientes': return <IngredientesPage />;

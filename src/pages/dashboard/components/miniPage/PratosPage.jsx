@@ -91,7 +91,6 @@ function PratosPage() {
         ...pratoAtual,
         ingredientes: listaApi,
       };
- console.log('body ', JSON.stringify(body));
       if (pratoAtual.id_prato) {
         await updatePrato(pratoAtual.id_prato, body);
         setSuccess('Prato atualizado com sucesso');
@@ -113,7 +112,8 @@ function PratosPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setPratoAtual(prev => ({ ...prev, [name]: value }));
+    const newvalue =  name === 'tempo' ?  parseInt(value) : value;
+    setPratoAtual(prev => ({ ...prev, [name]: newvalue }));
   };
 
   // Novo handler para ingredientes usando TextField multiple
@@ -129,8 +129,9 @@ function PratosPage() {
     if (prato) {
       setPratoAtual(prato);
       // ingredientesSelecionados agora é um array de ids
-      const selecionados = prato.ingredientes?.map(ing => ing.id_ingrediente) || [];
+      const selecionados = prato.Ingredientes.map(ing => ing.id_ingrediente); ;
       setIngredientesSelecionados(selecionados);
+    
     }
   };
 
@@ -147,10 +148,10 @@ function PratosPage() {
   // Função para formatar o preço corretamente
   const handlePriceChange = (e) => {
     const { value } = e.target;
-    const numericValue = value.replace('R$', '').replace(/\D/g, '');
+
     setPratoAtual((prev) => ({
       ...prev,
-      preco: numericValue ? (parseFloat(numericValue) / 100).toFixed(2) : '',
+      preco: parseFloat(value)
     }));
   };
 
@@ -179,6 +180,7 @@ function PratosPage() {
             <TextField
               label="Preço"
               name="preco"
+              type="number"
               value={pratoAtual.preco}
               onChange={handlePriceChange}
               fullWidth

@@ -28,11 +28,12 @@ function LoginPage() {
       setSuccess('');
    
       const data = await loginApi(email, password);
-
+    
       setSuccess('Login realizado com sucesso!');
       setError('');
-      setUserId(data.id); 
-      (data.autorizado ) ? navigate("/Home") : setError("Senha ou email invalido!");
+      setUserId(data.usuarios.id); 
+      (data.token ) ? navigate("/Home") : setError("Senha ou email invalido!");
+    
     } catch (error) {
       console.log(error)
       setError("Senha ou email invalido!");
