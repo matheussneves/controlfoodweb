@@ -157,17 +157,18 @@ function PratosPage() {
 
 
   return (
-    <Container>
-      <Box my={4}>
-        <Typography variant="h4">Gestão de Pratos</Typography>
+    <Container id="pratos-page-container">
+      <Box id="pratos-page-header" my={4}>
+        <Typography id="pratos-page-title" variant="h4">Gestão de Pratos</Typography>
       </Box>
-      {error && <Snackbar open autoHideDuration={6000}><Alert severity="error">{error}</Alert></Snackbar>}
-      {success && <Snackbar open autoHideDuration={6000}><Alert severity="success">{success}</Alert></Snackbar>}
+      {error && <Snackbar id="pratos-page-error-snackbar" open autoHideDuration={6000}><Alert id="pratos-page-error-alert" severity="error">{error}</Alert></Snackbar>}
+      {success && <Snackbar id="pratos-page-success-snackbar" open autoHideDuration={6000}><Alert id="pratos-page-success-alert" severity="success">{success}</Alert></Snackbar>}
 
-      <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={4}>
+      <Box id="pratos-page-form" component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
+        <Grid id="pratos-page-form-grid" container spacing={2}>
+          <Grid id="pratos-page-form-nome" item xs={12} sm={4}>
             <TextField
+              id="pratos-page-input-nome"
               label="Nome do Prato"
               name="nome"
               value={pratoAtual.nome}
@@ -176,8 +177,9 @@ function PratosPage() {
               required
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid id="pratos-page-form-preco" item xs={12} sm={4}>
             <TextField
+              id="pratos-page-input-preco"
               label="Preço"
               name="preco"
               type="number"
@@ -187,8 +189,9 @@ function PratosPage() {
               required
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid id="pratos-page-form-tempo" item xs={12} sm={4}>
             <TextField
+              id="pratos-page-input-tempo"
               label="Tempo de Preparo (min)"
               name="tempo"
               type="number"
@@ -198,20 +201,21 @@ function PratosPage() {
               required
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid id="pratos-page-form-descricao" item xs={12}>
             <TextField
+              id="pratos-page-input-descricao"
               label="Descrição do Prato"
               name="descricao"
               multiline
               fullWidth
               value={pratoAtual.descricao}
               onChange={handleChange}
-              
               required
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid id="pratos-page-form-ingredientes" item xs={12}>
             <TextField
+              id="pratos-page-input-ingredientes"
               label="Selecione os ingredientes"
               select
               name="ingredientes"
@@ -222,7 +226,7 @@ function PratosPage() {
               onChange={handleIngredientesChange}
             >
               {ingredientes.map((ing) => (
-                <MenuItem key={ing.Id_ingrediente} value={ing.Id_ingrediente}>
+                <MenuItem id={`pratos-page-option-ingrediente-${ing.Id_ingrediente}`} key={ing.Id_ingrediente} value={ing.Id_ingrediente}>
                   {ing.descricao}
                 </MenuItem>
               ))}
@@ -230,34 +234,34 @@ function PratosPage() {
           </Grid>
         </Grid>
 
-        <Box mt={2}>
-          <Button type="submit" variant="contained" disabled={loading} onClick={handleSubmit}>
-            {loading ? <CircularProgress size={24} /> : 'Salvar Prato'}
+        <Box id="pratos-page-form-actions" mt={2}>
+          <Button id="pratos-page-submit-button" type="submit" variant="contained" disabled={loading} onClick={handleSubmit}>
+            {loading ? <CircularProgress id="pratos-page-loading" size={24} /> : 'Salvar Prato'}
           </Button>
         </Box>
       </Box>
 
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Nome do Prato</TableCell>
-              <TableCell>Preço</TableCell>
-              <TableCell>Tempo de Preparo</TableCell>
-              <TableCell>Ações</TableCell>
+      <TableContainer id="pratos-page-table-container">
+        <Table id="pratos-page-table">
+          <TableHead id="pratos-page-table-head">
+            <TableRow id="pratos-page-table-head-row">
+              <TableCell id="pratos-page-table-head-nome">Nome do Prato</TableCell>
+              <TableCell id="pratos-page-table-head-preco">Preço</TableCell>
+              <TableCell id="pratos-page-table-head-tempo">Tempo de Preparo</TableCell>
+              <TableCell id="pratos-page-table-head-acoes">Ações</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody id="pratos-page-table-body">
             {pratos.map((prato) => (
-              <TableRow key={prato.id_prato}>
-                <TableCell>{prato.nome}</TableCell>
-                <TableCell>R$ {parseFloat(prato.preco).toFixed(2)}</TableCell>
-                <TableCell>{prato.tempo} min</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEdit(prato.id_prato)}>
+              <TableRow id={`pratos-page-table-row-${prato.id_prato}`} key={prato.id_prato}>
+                <TableCell id={`pratos-page-table-cell-nome-${prato.id_prato}`}>{prato.nome}</TableCell>
+                <TableCell id={`pratos-page-table-cell-preco-${prato.id_prato}`}>R$ {parseFloat(prato.preco).toFixed(2)}</TableCell>
+                <TableCell id={`pratos-page-table-cell-tempo-${prato.id_prato}`}>{prato.tempo} min</TableCell>
+                <TableCell id={`pratos-page-table-cell-acoes-${prato.id_prato}`}>
+                  <IconButton id={`pratos-page-edit-button-${prato.id_prato}`} onClick={() => handleEdit(prato.id_prato)}>
                     <Edit />
                   </IconButton>
-                  <IconButton onClick={() => handleDelete(prato.id_prato)}>
+                  <IconButton id={`pratos-page-delete-button-${prato.id_prato}`} onClick={() => handleDelete(prato.id_prato)}>
                     <Delete />
                   </IconButton>
                 </TableCell>

@@ -233,12 +233,13 @@ carregarDeliverers();
       </Snackbar>
 
       <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4, p: 3, bgcolor: '#fafafa', borderRadius: 2, boxShadow: 1 }}>
-        <Typography variant="h6" gutterBottom>
+        <Typography id="pedidos-page-form-title" variant="h6" gutterBottom>
           {modoEdicao ? 'Editar Pedido' : 'Novo Pedido'}
         </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={4}>
+        <Grid id="pedidos-page-form-grid" container spacing={2}>
+          <Grid id="pedidos-page-form-cliente" item xs={12} sm={4}>
             <TextField
+              id="pedidos-page-input-cliente"
               label="Cliente"
               select
               name="cliente_id_cliente"
@@ -249,14 +250,20 @@ carregarDeliverers();
               size="small"
             >
               {clientes.map((cliente) => (
-                
-                <MenuItem key={cliente.id_cliente} value={cliente.id_cliente}>{cliente.nome}</MenuItem>
+                <MenuItem
+                  id={`pedidos-page-option-cliente-${cliente.id_cliente}`}
+                  key={cliente.id_cliente}
+                  value={cliente.id_cliente}
+                >
+                  {cliente.nome}
+                </MenuItem>
               ))}
             </TextField>
           </Grid>
 
-          <Grid item xs={12} sm={4}>
+          <Grid id="pedidos-page-form-entregador" item xs={12} sm={4}>
             <TextField
+              id="pedidos-page-input-entregador"
               label="Entregador"
               select
               name="entregador_id_entregador"
@@ -267,14 +274,20 @@ carregarDeliverers();
               size="small"
             >
               {deliverers.map((entregador) => (
-                
-                <MenuItem key={entregador.id_entregador} value={entregador.id_entregador}>{entregador.nome}</MenuItem>
+                <MenuItem
+                  id={`pedidos-page-option-entregador-${entregador.id_entregador}`}
+                  key={entregador.id_entregador}
+                  value={entregador.id_entregador}
+                >
+                  {entregador.nome}
+                </MenuItem>
               ))}
             </TextField>
           </Grid>
 
-          <Grid item xs={12} sm={4}>
+          <Grid id="pedidos-page-form-data" item xs={12} sm={4}>
             <TextField
+              id="pedidos-page-input-data"
               label="Data do Pedido"
               type="datetime-local"
               name="data_pedido"

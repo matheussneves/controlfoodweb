@@ -15,35 +15,36 @@ import StatCard, { StatCardProps } from './StatCard';
 export default function MainGrid() {
   const date = new Date();
   return (
-    <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
+    <Box id="main-grid-box" sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
     
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+      <Typography id="main-grid-title" component="h2" variant="h6" sx={{ mb: 2 }}>
       Dashboard
       </Typography>
       <Grid
+        id="main-grid-charts-container"
         container
         spacing={2}
         columns={12}
         sx={{ mb: (theme) => theme.spacing(2) }}
       >
         
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid id="main-grid-sessions-chart" size={{ xs: 12, md: 6 }}>
           <SessionsChart />
         </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid id="main-grid-page-views-chart" size={{ xs: 12, md: 6 }}>
           <PageViewsBarChart />
         </Grid>
       </Grid>
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+      <Typography id="main-grid-orders-title" component="h2" variant="h6" sx={{ mb: 2 }}>
         Pedidos
       </Typography>
-      <Grid container spacing={2} columns={12}>
+      <Grid id="main-grid-orders-container" container spacing={2} columns={12}>
         
           <CustomizedDataGrid />
        
         
       </Grid>
-      <Copyright sx={{ my: 4 }} />
+      <Copyright id="main-grid-copyright" sx={{ my: 4 }} />
     </Box>
   );
 }

@@ -93,33 +93,33 @@ const UserPage = () => {
   const handleCloseSuccess = () => setSuccess('');
 
   return (
-    <Container>
-      <Box my={4}>
-        <Typography variant="h4">Gerenciamento de Usuários</Typography>
+    <Container id="user-page-container">
+      <Box id="user-page-header" my={4}>
+        <Typography id="user-page-title" variant="h4">Gerenciamento de Usuários</Typography>
       </Box>
 
-      <Snackbar open={!!error} autoHideDuration={6000} onClose={handleCloseError}>
-        <Alert severity="error" onClose={handleCloseError} sx={{ width: '100%' }}>
+      <Snackbar id="user-page-error-snackbar" open={!!error} autoHideDuration={6000} onClose={handleCloseError}>
+        <Alert id="user-page-error-alert" severity="error" onClose={handleCloseError} sx={{ width: '100%' }}>
           {error}
         </Alert>
       </Snackbar>
 
-      <Snackbar open={!!success} autoHideDuration={6000} onClose={handleCloseSuccess}>
-        <Alert severity="success" onClose={handleCloseSuccess} sx={{ width: '100%' }}>
+      <Snackbar id="user-page-success-snackbar" open={!!success} autoHideDuration={6000} onClose={handleCloseSuccess}>
+        <Alert id="user-page-success-alert" severity="success" onClose={handleCloseSuccess} sx={{ width: '100%' }}>
           {success}
         </Alert>
       </Snackbar>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
-          <UserForm selectedUser={selectedUser} onSave={handleSave} loading={loading} />
+      <Grid id="user-page-grid" container spacing={3}>
+        <Grid id="user-page-form-grid" item xs={12} md={4}>
+          <UserForm id="user-page-form" selectedUser={selectedUser} onSave={handleSave} loading={loading} />
         </Grid>
 
-        <Grid item xs={12} md={8}>
+        <Grid id="user-page-list-grid" item xs={12} md={8}>
           {loading && !users.length ? (
-            <CircularProgress />
+            <CircularProgress id="user-page-loading" />
           ) : (
-            <UserList users={users} onEdit={setSelectedUser} onDelete={handleDelete} />
+            <UserList id="user-page-list" users={users} onEdit={setSelectedUser} onDelete={handleDelete} />
           )}
         </Grid>
       </Grid>
@@ -172,55 +172,20 @@ const UserForm = ({ selectedUser, onSave, loading }) => {
 
   return (
     <Box
+      id="user-form-box"
       component="form"
       onSubmit={handleSubmit}
       sx={{ padding: 2, border: '1px solid #ddd', borderRadius: 2 }}
     >
-      <Typography variant="h6">{selectedUser ? 'Editar Usuário' : 'Adicionar Usuário'}</Typography>
-      <TextField
-        label="Nome"
-        fullWidth
-        value={nome}
-        onChange={(e) => setNome(e.target.value)}
-        sx={{ mb: 2 }}
-        required
-      />
-      <TextField
-        label="Email"
-        fullWidth
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        sx={{ mb: 2 }}
-        required
-        type="email"
-      />
-      <TextField
-        label="Senha"
-        fullWidth
-        value={senha}
-        onChange={(e) => setSenha(e.target.value)}
-        sx={{ mb: 2 }}
-        type="password"
-        helperText={selectedUser ? 'Preencha apenas se quiser alterar a senha' : ''}
-        required={!selectedUser} // senha obrigatória só se for criar novo
-      />
-      <FormControlLabel
-        control={<Checkbox checked={accessCreateUser} onChange={(e) => setAccessCreateUser(e.target.checked)} />}
-        label="Acesso: Criar Usuário"
-      />
-      <FormControlLabel
-        control={<Checkbox checked={accessDashboard} onChange={(e) => setAccessDashboard(e.target.checked)} />}
-        label="Acesso: Dashboard"
-      />
-      <FormControlLabel
-        control={<Checkbox checked={accessCreateOrder} onChange={(e) => setAccessCreateOrder(e.target.checked)} />}
-        label="Acesso: Criar Pedido"
-      />
-      <FormControlLabel
-        control={<Checkbox checked={accessStock} onChange={(e) => setAccessStock(e.target.checked)} />}
-        label="Acesso: Estoque"
-      />
-      <Button type="submit" variant="contained" color="primary" disabled={loading}>
+      <Typography id="user-form-title" variant="h6">{selectedUser ? 'Editar Usuário' : 'Adicionar Usuário'}</Typography>
+      <TextField id="user-form-input-nome" label="Nome" fullWidth value={nome} onChange={(e) => setNome(e.target.value)} sx={{ mb: 2 }} required />
+      <TextField id="user-form-input-email" label="Email" fullWidth value={email} onChange={(e) => setEmail(e.target.value)} sx={{ mb: 2 }} required type="email" />
+      <TextField id="user-form-input-senha" label="Senha" fullWidth value={senha} onChange={(e) => setSenha(e.target.value)} sx={{ mb: 2 }} type="password" helperText={selectedUser ? 'Preencha apenas se quiser alterar a senha' : ''} required={!selectedUser} />
+      <FormControlLabel id="user-form-checkbox-create-user" control={<Checkbox checked={accessCreateUser} onChange={(e) => setAccessCreateUser(e.target.checked)} />} label="Acesso: Criar Usuário" />
+      <FormControlLabel id="user-form-checkbox-dashboard" control={<Checkbox checked={accessDashboard} onChange={(e) => setAccessDashboard(e.target.checked)} />} label="Acesso: Dashboard" />
+      <FormControlLabel id="user-form-checkbox-create-order" control={<Checkbox checked={accessCreateOrder} onChange={(e) => setAccessCreateOrder(e.target.checked)} />} label="Acesso: Criar Pedido" />
+      <FormControlLabel id="user-form-checkbox-stock" control={<Checkbox checked={accessStock} onChange={(e) => setAccessStock(e.target.checked)} />} label="Acesso: Estoque" />
+      <Button id="user-form-submit-button" type="submit" variant="contained" color="primary" disabled={loading}>
         {loading ? 'Salvando...' : 'Salvar'}
       </Button>
     </Box>
@@ -231,23 +196,20 @@ const UserList = ({ users, onEdit, onDelete }) => {
   if (!users.length) return <Typography>Nenhum usuário encontrado.</Typography>;
 
   return (
-    <List>
+    <List id="user-list">
       {users.map((user) => (
-        <ListItem key={user.id_usuario} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <ListItemText
-            primary={user.nome}
-            secondary={`Email: ${user.email}, Permissões: ${[
-              user.acesso_criar_usuario ? 'Criar Usuário' : '',
-              user.acesso_dashboard ? 'Dashboard' : '',
-              user.acesso_criar_pedido ? 'Criar Pedido' : '',
-              user.acesso_estoque ? 'Estoque' : '',
-            ].filter(Boolean).join(', ')}`}
-          />
-          <Box>
-            <IconButton onClick={() => onEdit(user)}>
+        <ListItem id={`user-list-item-${user.id_usuario}`} key={user.id_usuario} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <ListItemText id={`user-list-item-text-${user.id_usuario}`} primary={user.nome} secondary={`Email: ${user.email}, Permissões: ${[
+            user.acesso_criar_usuario ? 'Criar Usuário' : '',
+            user.acesso_dashboard ? 'Dashboard' : '',
+            user.acesso_criar_pedido ? 'Criar Pedido' : '',
+            user.acesso_estoque ? 'Estoque' : '',
+          ].filter(Boolean).join(', ')}`} />
+          <Box id={`user-list-item-actions-${user.id_usuario}`}>
+            <IconButton id={`user-list-item-edit-${user.id_usuario}`} onClick={() => onEdit(user)}>
               <Edit />
             </IconButton>
-            <IconButton onClick={() => onDelete(user.id_usuario)}>
+            <IconButton id={`user-list-item-delete-${user.id_usuario}`} onClick={() => onDelete(user.id_usuario)}>
               <Delete />
             </IconButton>
           </Box>

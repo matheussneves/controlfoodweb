@@ -35,7 +35,6 @@ function IngredientesPage() {
       const data = await getIngredientes();
       setIngredientes(data);
     } catch (err) {
-      console.error(err.response || err);
       setError('Erro ao carregar ingredientes');
     } finally {
       setLoading(false);
@@ -59,13 +58,12 @@ function IngredientesPage() {
         msg = 'Ingrediente criado com sucesso';
       }
       setSuccess(msg);
-      setError('');
+setError('');
       setIngredienteAtual(ingredienteVazio);
       setModoEdicao(false);
       setIngredienteId(null);
       await carregarIngredientes();
     } catch (err) {
-      console.error(err.response || err);
       setError('Erro ao salvar ingrediente');
     } finally {
       setLoading(false);
@@ -84,7 +82,6 @@ function IngredientesPage() {
       setModoEdicao(true);
       setIngredienteId(id);
     } catch (err) {
-      console.error(err.response || err);
       setError(`Erro ao carregar ingrediente ${id}`);
     } finally {
       setLoading(false);
@@ -95,12 +92,13 @@ function IngredientesPage() {
     if (!window.confirm('Tem certeza que deseja excluir este ingrediente?')) return;
     setLoading(true);
     try {
-      await deleteIngrediente(id);
+      awaitsetError('');
+deleteIngrediente(id);
+setError('');
       setSuccess('Ingrediente excluído com sucesso');
-      setError('');
+setError('');
       await carregarIngredientes();
     } catch (err) {
-      console.error(err.response || err);
       setError('Erro ao excluir ingrediente');
     } finally {
       setLoading(false);
@@ -116,25 +114,26 @@ function IngredientesPage() {
   };
 
   return (
-    <Container>
-      <Box my={4}>
-        <Typography variant="h4" gutterBottom>
+    <Container id="ingredientes-page-container">
+      <Box id="ingredientes-page-header" my={4}>
+        <Typography id="ingredientes-page-title" variant="h4" gutterBottom>
           Gestão de Ingredientes
         </Typography>
       </Box>
 
       {(error || success) && (
-        <Snackbar open autoHideDuration={6000} onClose={() => { setError(''); setSuccess(''); }}>
-          <Alert severity={error ? 'error' : 'success'}>
+        <Snackbar id="ingredientes-page-snackbar" open autoHideDuration={6000} onClose={() => { setError(''); setSuccess(''); }}>
+          <Alert id="ingredientes-page-alert" severity={error ? 'error' : 'success'}>
             {error || success}
           </Alert>
         </Snackbar>
       )}
 
-      <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={4}>
+      <Box id="ingredientes-page-form" component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
+        <Grid id="ingredientes-page-form-grid" container spacing={2}>
+          <Grid id="ingredientes-page-form-descricao" item xs={12} sm={4}>
             <TextField
+              id="ingredientes-page-input-descricao"
               label="Descrição"
               name="descricao"
               value={ingredienteAtual.descricao}
@@ -143,8 +142,9 @@ function IngredientesPage() {
               required
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid id="ingredientes-page-form-alergicos" item xs={12} sm={4}>
             <TextField
+              id="ingredientes-page-input-alergicos"
               label="Contém alérgicos"
               name="contem_alergicos"
               type="number"
@@ -155,8 +155,9 @@ function IngredientesPage() {
               required
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid id="ingredientes-page-form-nutricionais" item xs={12} sm={4}>
             <TextField
+              id="ingredientes-page-input-nutricionais"
               label="Informações nutricionais"
               name="informacoes_nutricionais"
               value={ingredienteAtual.informacoes_nutricionais}
@@ -166,38 +167,60 @@ function IngredientesPage() {
             />
           </Grid>
         </Grid>
-        <Box mt={2}>
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
-            {loading ? <CircularProgress size={24} /> : (modoEdicao ? 'Atualizar Ingrediente' : 'Adicionar Ingrediente')}
+        <Box id="ingredientes-page-form-submit-box" mt={2}>
+          <Button
+            id="ingredientes-page-submit-button"
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
+          >
+            {loading ? <CircularProgress id="ingredientes-page-loading" size={24} /> : (modoEdicao ? 'Atualizar Ingrediente' : 'Adicionar Ingrediente')}
           </Button>
         </Box>
       </Box>
 
-      <Typography variant="h6" gutterBottom>
+      <Typography id="ingredientes-page-table-title" variant="h6" gutterBottom>
         Lista de Ingredientes
       </Typography>
       {loading ? (
-        <CircularProgress />
+        <CircularProgress id="ingredientes-page-table-loading" />
       ) : (
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Descrição</TableCell>
-                <TableCell>Contém alérgicos</TableCell>
-                <TableCell>Informações nutricionais</TableCell>
-                <TableCell>Ações</TableCell>
+        <TableContainer id="ingredientes-page-table-container">
+          <Table id="ingredientes-page-table">
+            <TableHead id="ingredientes-page-table-head">
+              <TableRow id="ingredientes-page-table-head-row">
+                <TableCell id="ingredientes-page-table-head-descricao">Descrição</TableCell>
+                <TableCell id="ingredientes-page-table-head-alergicos">Contém alérgicos</TableCell>
+                <TableCell id="ingredientes-page-table-head-nutricionais">Informações nutricionais</TableCell>
+                <TableCell id="ingredientes-page-table-head-acoes">Ações</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody id="ingredientes-page-table-body">
               {ingredientes.map(ingrediente => (
-                <TableRow key={ingrediente.Id_ingrediente || ingrediente.id || Math.random()}>
-                  <TableCell>{ingrediente.descricao}</TableCell>
-                  <TableCell>{ingrediente.contem_alergicos}</TableCell>
-                  <TableCell>{ingrediente.informacoes_nutricionais}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleEdit(ingrediente.Id_ingrediente)}><Edit /></IconButton>
-                    <IconButton onClick={() => handleDelete(ingrediente.Id_ingrediente)}><Delete /></IconButton>
+                <TableRow id={`ingredientes-page-table-row-${ingrediente.Id_ingrediente}`} key={ingrediente.Id_ingrediente}>
+                  <TableCell id={`ingredientes-page-table-cell-descricao-${ingrediente.Id_ingrediente}`}>
+                    {ingrediente.descricao}
+                  </TableCell>
+                  <TableCell id={`ingredientes-page-table-cell-alergicos-${ingrediente.Id_ingrediente}`}>
+                    {ingrediente.contem_alergicos}
+                  </TableCell>
+                  <TableCell id={`ingredientes-page-table-cell-nutricionais-${ingrediente.Id_ingrediente}`}>
+                    {ingrediente.informacoes_nutricionais}
+                  </TableCell>
+                  <TableCell id={`ingredientes-page-table-cell-acoes-${ingrediente.Id_ingrediente}`}>
+                    <IconButton
+                      id={`ingredientes-page-edit-button-${ingrediente.Id_ingrediente}`}
+                      onClick={() => handleEdit(ingrediente.Id_ingrediente)}
+                    >
+                      <Edit />
+                    </IconButton>
+                    <IconButton
+                      id={`ingredientes-page-delete-button-${ingrediente.Id_ingrediente}`}
+                      onClick={() => handleDelete(ingrediente.Id_ingrediente)}
+                    >
+                      <Delete />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}

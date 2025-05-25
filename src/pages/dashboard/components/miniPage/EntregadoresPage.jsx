@@ -85,34 +85,39 @@ const EntregadoresPage = () => {
   };
 
   return (
-    <Container>
-      <Box my={4}>
-        <Typography variant="h4" gutterBottom>
+    <Container id="entregadores-page-container">
+      <Box id="entregadores-page-header" my={4}>
+        <Typography id="entregadores-page-title" variant="h4" gutterBottom>
           Gestão de Entregadores
         </Typography>
       </Box>
 
       {/* Notificações */}
       {error && (
-        <Snackbar open={true} autoHideDuration={6000}>
-          <Alert severity="error">{error}</Alert>
+        <Snackbar id="entregadores-page-error-snackbar" open={true} autoHideDuration={6000}>
+          <Alert id="entregadores-page-error-alert" severity="error">{error}</Alert>
         </Snackbar>
       )}
       {success && (
-        <Snackbar open={true} autoHideDuration={6000}>
-          <Alert severity="success">{success}</Alert>
+        <Snackbar id="entregadores-page-success-snackbar" open={true} autoHideDuration={6000}>
+          <Alert id="entregadores-page-success-alert" severity="success">{success}</Alert>
         </Snackbar>
       )}
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
-          <DelivererForm selectedDeliverer={selectedDeliverer} onSave={handleSave} />
+      <Grid id="entregadores-page-grid" container spacing={3}>
+        <Grid id="entregadores-page-form-grid" item xs={12} md={4}>
+          <DelivererForm
+            id="entregadores-page-form"
+            selectedDeliverer={selectedDeliverer}
+            onSave={handleSave}
+          />
         </Grid>
-        <Grid item xs={12} md={8}>
+        <Grid id="entregadores-page-list-grid" item xs={12} md={8}>
           {loading ? (
-            <CircularProgress />
+            <CircularProgress id="entregadores-page-loading" />
           ) : (
             <DelivererList
+              id="entregadores-page-list"
               deliverers={deliverers}
               onEdit={(deliverer) => setSelectedDeliverer(deliverer)}
               onDelete={handleDelete}
@@ -130,7 +135,7 @@ const DelivererForm = ({ selectedDeliverer, onSave }) => {
   const [telefone, setTelefone] = useState('');
   const [veiculo, setVeiculo] = useState('');
   const [placa, setPlaca] = useState('');
-  const [selectedTelefone, setSelectedTelefone] = useState([]);  // Estado para telefones múltiplos
+  const [selectedTelefone, setSelectedTelefone] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -140,7 +145,6 @@ const DelivererForm = ({ selectedDeliverer, onSave }) => {
       setTelefone(selectedDeliverer.telefone || '');
       setVeiculo(selectedDeliverer.veiculo || '');
       setPlaca(selectedDeliverer.placa || '');
-      // Ajuste para múltiplos telefones, se houver
       if (selectedDeliverer.telefone) {
         setSelectedTelefone([selectedDeliverer.telefone]);
       }
@@ -157,24 +161,30 @@ const DelivererForm = ({ selectedDeliverer, onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const delivererData = { nome, senha, telefone: selectedTelefone.join(','), veiculo, placa };  // Junta os telefones em uma string separada por vírgulas
+    const delivererData = { nome, senha, telefone: selectedTelefone.join(','), veiculo, placa };
     await onSave(delivererData);
     setLoading(false);
   };
 
   const handleTelefoneChange = (event) => {
     const { value } = event.target;
-    setSelectedTelefone((prev) => 
+    setSelectedTelefone((prev) =>
       prev.includes(value) ? prev.filter((telefone) => telefone !== value) : [...prev, value]
     );
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ padding: 2, border: '1px solid #ddd', borderRadius: 2 }}>
-      <Typography variant="h6">
+    <Box
+      id="entregadores-form-box"
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ padding: 2, border: '1px solid #ddd', borderRadius: 2 }}
+    >
+      <Typography id="entregadores-form-title" variant="h6">
         {selectedDeliverer ? 'Editar Entregador' : 'Adicionar Novo Entregador'}
       </Typography>
       <TextField
+        id="entregadores-form-nome"
         label="Nome"
         fullWidth
         value={nome}
@@ -183,6 +193,7 @@ const DelivererForm = ({ selectedDeliverer, onSave }) => {
         required
       />
       <TextField
+        id="entregadores-form-senha"
         label="Senha"
         fullWidth
         value={senha}
@@ -199,6 +210,7 @@ const DelivererForm = ({ selectedDeliverer, onSave }) => {
         {(inputProps) => (
           <TextField
             {...inputProps}
+            id="entregadores-form-telefone"
             label="Telefone"
             fullWidth
             sx={{ mb: 2 }}
@@ -207,45 +219,32 @@ const DelivererForm = ({ selectedDeliverer, onSave }) => {
         )}
       </InputMask>
 
-      {/* Campo para selecionar múltiplos telefones */}
       <TextField
-        select
-        label="Telefones"
-        value={selectedTelefone}
-        onChange={handleTelefoneChange}
-        fullWidth
-        SelectProps={{
-          multiple: true,
-          renderValue: (selected) => selected.join(', '),
-        }}
-        sx={{ mb: 2 }}
-      >
-        {['(11) 99999-9999', '(11) 98888-8888', '(11) 97777-7777'].map((telefone) => (
-          <MenuItem key={telefone} value={telefone}>
-            <Checkbox checked={selectedTelefone.indexOf(telefone) > -1} />
-            <MuiListItemText primary={telefone} />
-          </MenuItem>
-        ))}
-      </TextField>
-
-      <TextField
+        id="entregadores-form-veiculo"
         label="Veículo"
         fullWidth
         value={veiculo}
         onChange={(e) => setVeiculo(e.target.value.toUpperCase())}
-        sx={{ mb: 2, textTransform: 'uppercase' }}
+        sx={{ mb: 2 }}
         required
       />
       <TextField
+        id="entregadores-form-placa"
         label="Placa"
         fullWidth
         value={placa}
         onChange={(e) => setPlaca(e.target.value.toUpperCase())}
         inputProps={{ maxLength: 7 }}
-        sx={{ mb: 2, textTransform: 'uppercase' }}
+        sx={{ mb: 2 }}
         required
       />
-      <Button type="submit" variant="contained" color="primary" disabled={loading}>
+      <Button
+        id="entregadores-form-submit"
+        type="submit"
+        variant="contained"
+        color="primary"
+        disabled={loading}
+      >
         {loading ? 'Salvando...' : 'Salvar'}
       </Button>
     </Box>
@@ -253,21 +252,33 @@ const DelivererForm = ({ selectedDeliverer, onSave }) => {
 };
 
 const DelivererList = ({ deliverers, onEdit, onDelete }) => {
-  if (!deliverers.length) return <Typography>Nenhum entregador encontrado.</Typography>;
+  if (!deliverers.length)
+    return <Typography id="entregadores-list-empty">Nenhum entregador encontrado.</Typography>;
 
   return (
-    <List>
+    <List id="entregadores-list">
       {deliverers.map((deliverer) => (
-        <ListItem key={deliverer.id} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <ListItem
+          id={`entregadores-list-item-${deliverer.id}`}
+          key={deliverer.id}
+          sx={{ display: 'flex', justifyContent: 'space-between' }}
+        >
           <ListItemText
+            id={`entregadores-list-item-text-${deliverer.id}`}
             primary={`${deliverer.nome} (${deliverer.veiculo} - ${deliverer.placa})`}
             secondary={`${deliverer.telefone}`}
           />
-          <Box>
-            <IconButton onClick={() => onEdit(deliverer)}>
+          <Box id={`entregadores-list-item-actions-${deliverer.id}`}>
+            <IconButton
+              id={`entregadores-list-item-edit-${deliverer.id}`}
+              onClick={() => onEdit(deliverer)}
+            >
               <Edit />
             </IconButton>
-            <IconButton onClick={() => onDelete(deliverer.id)}>
+            <IconButton
+              id={`entregadores-list-item-delete-${deliverer.id}`}
+              onClick={() => onDelete(deliverer.id)}
+            >
               <Delete />
             </IconButton>
           </Box>

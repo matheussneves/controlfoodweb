@@ -130,30 +130,36 @@ function EstoquePage() {
   };
 
   return (
-    <Container>
-      <Box my={4}>
-        <Typography variant="h4" gutterBottom>
+    <Container id="estoque-page-container">
+      <Box id="estoque-page-header" my={4}>
+        <Typography id="estoque-page-title" variant="h4" gutterBottom>
           Gestão de Estoque
         </Typography>
       </Box>
 
       {/* Snackbar para erros e sucesso */}
       {error && (
-        <Snackbar open={true} autoHideDuration={6000}>
-          <Alert severity="error">{error}</Alert>
+        <Snackbar id="estoque-page-error-snackbar" open={true} autoHideDuration={6000}>
+          <Alert id="estoque-page-error-alert" severity="error">{error}</Alert>
         </Snackbar>
       )}
       {success && (
-        <Snackbar open={true} autoHideDuration={6000}>
-          <Alert severity="success">{success}</Alert>
+        <Snackbar id="estoque-page-success-snackbar" open={true} autoHideDuration={6000}>
+          <Alert id="estoque-page-success-alert" severity="success">{success}</Alert>
         </Snackbar>
       )}
 
       {/* Formulário de Adicionar/Editar Estoque */}
-      <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+      <Box
+        id="estoque-page-form"
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{ mb: 4 }}
+      >
+        <Grid id="estoque-page-form-grid" container spacing={2}>
+          <Grid id="estoque-page-form-ingrediente" item xs={12} sm={6}>
             <TextField
+              id="estoque-page-form-ingrediente-select"
               select
               label="Ingrediente"
               name="ingrediente_Id_ingrediente"
@@ -163,14 +169,19 @@ function EstoquePage() {
               required
             >
               {ingredientes.map((ingrediente) => (
-                <MenuItem key={ingrediente.Id_ingrediente} value={ingrediente.Id_ingrediente}>
+                <MenuItem
+                  id={`estoque-page-form-ingrediente-option-${ingrediente.Id_ingrediente}`}
+                  key={ingrediente.Id_ingrediente}
+                  value={ingrediente.Id_ingrediente}
+                >
                   {ingrediente.descricao}
                 </MenuItem>
               ))}
             </TextField>
           </Grid>
-          <Grid item xs={12} sm={3}>
+          <Grid id="estoque-page-form-quantidade" item xs={12} sm={3}>
             <TextField
+              id="estoque-page-form-quantidade-input"
               label="Quantidade"
               name="quantidade"
               type="number"
@@ -180,8 +191,9 @@ function EstoquePage() {
               required
             />
           </Grid>
-          <Grid item xs={12} sm={3}>
+          <Grid id="estoque-page-form-medida" item xs={12} sm={3}>
             <TextField
+              id="estoque-page-form-medida-input"
               label="Medida"
               name="medida"
               value={estoqueAtual.medida}
@@ -190,8 +202,9 @@ function EstoquePage() {
               required
             />
           </Grid>
-          <Grid item xs={12} sm={3}>
+          <Grid id="estoque-page-form-quantidade-minima" item xs={12} sm={3}>
             <TextField
+              id="estoque-page-form-quantidade-minima-input"
               label="Quantidade Mínima"
               name="quantidade_minima"
               type="number"
@@ -202,43 +215,66 @@ function EstoquePage() {
             />
           </Grid>
         </Grid>
-        <Box mt={2}>
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
-            {loading ? <CircularProgress size={24} /> : modoEdicao ? 'Atualizar Item' : 'Adicionar Item'}
+        <Box id="estoque-page-form-submit-box" mt={2}>
+          <Button
+            id="estoque-page-form-submit-button"
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
+          >
+            {loading ? <CircularProgress id="estoque-page-form-loading" size={24} /> : modoEdicao ? 'Atualizar Item' : 'Adicionar Item'}
           </Button>
         </Box>
       </Box>
 
       {/* Tabela de Estoques */}
-      <Typography variant="h6" gutterBottom>
+      <Typography id="estoque-page-table-title" variant="h6" gutterBottom>
         Lista de Estoques
       </Typography>
       {loading ? (
-        <CircularProgress />
+        <CircularProgress id="estoque-page-table-loading" />
       ) : (
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Descrição</TableCell>
-                <TableCell>Quantidade</TableCell>
-                <TableCell>Medida</TableCell>
-                <TableCell>Quantidade Mínima</TableCell>
-                <TableCell>Ações</TableCell>
+        <TableContainer id="estoque-page-table-container">
+          <Table id="estoque-page-table">
+            <TableHead id="estoque-page-table-head">
+              <TableRow id="estoque-page-table-head-row">
+                <TableCell id="estoque-page-table-head-descricao">Descrição</TableCell>
+                <TableCell id="estoque-page-table-head-quantidade">Quantidade</TableCell>
+                <TableCell id="estoque-page-table-head-medida">Medida</TableCell>
+                <TableCell id="estoque-page-table-head-quantidade-minima">Quantidade Mínima</TableCell>
+                <TableCell id="estoque-page-table-head-acoes">Ações</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody id="estoque-page-table-body">
               {estoques.map((estoque) => (
-                <TableRow key={estoque.id_estoque}>
-                  <TableCell>{getDescricaoIngrediente(estoque.ingrediente_Id_ingrediente)}</TableCell>
-                  <TableCell>{estoque.quantidade}</TableCell>
-                  <TableCell>{estoque.medida}</TableCell>
-                  <TableCell>{estoque.quantidade_minima}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleEdit(estoque.id_estoque)}>
+                <TableRow
+                  id={`estoque-page-table-row-${estoque.id_estoque}`}
+                  key={estoque.id_estoque}
+                >
+                  <TableCell id={`estoque-page-table-cell-descricao-${estoque.id_estoque}`}>
+                    {getDescricaoIngrediente(estoque.ingrediente_Id_ingrediente)}
+                  </TableCell>
+                  <TableCell id={`estoque-page-table-cell-quantidade-${estoque.id_estoque}`}>
+                    {estoque.quantidade}
+                  </TableCell>
+                  <TableCell id={`estoque-page-table-cell-medida-${estoque.id_estoque}`}>
+                    {estoque.medida}
+                  </TableCell>
+                  <TableCell id={`estoque-page-table-cell-quantidade-minima-${estoque.id_estoque}`}>
+                    {estoque.quantidade_minima}
+                  </TableCell>
+                  <TableCell id={`estoque-page-table-cell-acoes-${estoque.id_estoque}`}>
+                    <IconButton
+                      id={`estoque-page-edit-button-${estoque.id_estoque}`}
+                      onClick={() => handleEdit(estoque.id_estoque)}
+                    >
                       <Edit />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(estoque.id_estoque)}>
+                    <IconButton
+                      id={`estoque-page-delete-button-${estoque.id_estoque}`}
+                      onClick={() => handleDelete(estoque.id_estoque)}
+                    >
                       <Delete />
                     </IconButton>
                   </TableCell>

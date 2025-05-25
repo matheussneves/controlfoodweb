@@ -12,7 +12,7 @@ function getDaysInMonth(month: number, year: number) {
     month: 'short',
   });
   const daysInMonth = date.getDate();
-  const days = [];
+  const days: string[] = [];
   let i = 1;
   while (days.length < daysInMonth) {
     days.push(`${monthName} ${i}`);
@@ -30,7 +30,7 @@ function renderSparklineCell(params: GridCellParams<SparkLineData, any>) {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+    <div id="sparkline-cell-container" style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
       <SparkLineChart
         data={value}
         width={colDef.computedWidth || 100}
@@ -54,7 +54,7 @@ function renderStatus(status: 'Entregue' | 'Pendente') {
     Pendente: 'default',
   };
 
-  return <Chip label={status} color={colors[status]} size="small" />;
+  return <Chip id={`status-chip-${status}`} label={status} color={colors[status]} size="small" />;
 }
 
 export function renderAvatar(
@@ -66,6 +66,7 @@ export function renderAvatar(
 
   return (
     <Avatar
+      id={`avatar-${params.value?.name}`}
       sx={{
         backgroundColor: params.value.color,
         width: '24px',

@@ -42,21 +42,23 @@ function LoginPage() {
   };
 
   return (
-    <Container maxWidth="xs">
+    <Container id="login-page-container" maxWidth="xs">
       <Box
+        id="login-page-box"
         display="flex"
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
         minHeight="100vh"
       >
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography id="login-page-title" variant="h4" component="h1" gutterBottom>
           Login
         </Typography>
-        <form onSubmit={handleLogin} style={{ width: '100%', marginTop: '1em' }}>
-          {error && <Alert severity="error">{error}</Alert>}
-          {success && <Alert severity="success">{success}</Alert>}
+        <form id="login-page-form" onSubmit={handleLogin} style={{ width: '100%', marginTop: '1em' }}>
+          {error && <Alert id="login-page-error-alert" severity="error">{error}</Alert>}
+          {success && <Alert id="login-page-success-alert" severity="success">{success}</Alert>}
           <TextField
+            id="login-page-email-input"
             label="E-mail"
             variant="outlined"
             fullWidth
@@ -65,6 +67,7 @@ function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
+            id="login-page-password-input"
             label="Senha"
             type="password"
             variant="outlined"
@@ -74,6 +77,7 @@ function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
           />
           <Button
+            id="login-page-submit-button"
             type="submit"
             fullWidth
             variant="contained"

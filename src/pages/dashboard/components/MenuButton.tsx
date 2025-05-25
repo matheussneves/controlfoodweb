@@ -12,12 +12,13 @@ export default function MenuButton({
 }: MenuButtonProps) {
   return (
     <Badge
+      id="menu-button-badge"
       color="error"
       variant="dot"
       invisible={!showBadge}
       sx={{ [`& .${badgeClasses.badge}`]: { right: 2, top: 2 } }}
     >
-      <IconButton size="small" {...props} />
+      <IconButton id="menu-button-icon" size="small" {...props} />
     </Badge>
   );
 }

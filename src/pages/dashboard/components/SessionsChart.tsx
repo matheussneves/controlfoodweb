@@ -24,7 +24,7 @@ function getDaysInMonth(month: number, year: number) {
     month: 'short',
   });
   const daysInMonth = date.getDate();
-  const days = [];
+  const days: string[] = [];
   let i = 1;
   while (days.length < daysInMonth) {
     days.push(`${monthName} ${i}`);
@@ -44,13 +44,14 @@ export default function SessionsChart() {
   ];
 
   return (
-    <Card variant="outlined" sx={{ width: '100%' }}>
-      <CardContent>
-        <Typography component="h2" variant="subtitle2" gutterBottom>
+    <Card id="sessions-chart-card" variant="outlined" sx={{ width: '100%' }}>
+      <CardContent id="sessions-chart-card-content">
+        <Typography id="sessions-chart-title" component="h2" variant="subtitle2" gutterBottom>
           Pedidos
         </Typography>
-        <Stack sx={{ justifyContent: 'space-between' }}>
+        <Stack id="sessions-chart-stack" sx={{ justifyContent: 'space-between' }}>
           <Stack
+            id="sessions-chart-inner-stack"
             direction="row"
             sx={{
               alignContent: { xs: 'center', sm: 'flex-start' },
@@ -59,7 +60,7 @@ export default function SessionsChart() {
             }}
           >
           </Stack>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+          <Typography id="sessions-chart-caption" variant="caption" sx={{ color: 'text.secondary' }}>
           Estatísticas de pedidos
           </Typography>
         </Stack>
@@ -136,9 +137,9 @@ export default function SessionsChart() {
             },
           }}
         >
-          <AreaGradient color={theme.palette.primary.dark} id="organic" />
-          <AreaGradient color={theme.palette.primary.main} id="referral" />
-          <AreaGradient color={theme.palette.primary.light} id="direct" />
+          <AreaGradient id="sessions-chart-gradient-organic" color={theme.palette.primary.dark} />
+          <AreaGradient id="sessions-chart-gradient-referral" color={theme.palette.primary.main} />
+          <AreaGradient id="sessions-chart-gradient-direct" color={theme.palette.primary.light} />
         </LineChart>
       </CardContent>
     </Card>

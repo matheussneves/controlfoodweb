@@ -5,10 +5,15 @@ import CustomDatePicker from './CustomDatePicker';
 import NavbarBreadcrumbs from './NavbarBreadcrumbs';
 import MenuButton from './MenuButton';
 import ColorModeIconDropdown from '.././theme/ColorModeIconDropdown';
-export default function Header({ breadcrumbComponent }) {
+interface HeaderProps {
+  breadcrumbComponent: React.ReactNode;
+}
+
+export default function Header({ breadcrumbComponent }: HeaderProps) {
 
   return (
     <Stack
+      id="header-stack"
       direction="row"
       sx={{
         display: { xs: 'none', md: 'flex' },
@@ -20,12 +25,10 @@ export default function Header({ breadcrumbComponent }) {
       }}
       spacing={2}
     >
-      <NavbarBreadcrumbs   breadcrumbComponent={breadcrumbComponent}/>
-      <Stack direction="row" sx={{ gap: 1 }}>
-   
-        <CustomDatePicker />
-        
-        <ColorModeIconDropdown />
+      <NavbarBreadcrumbs breadcrumbComponent={breadcrumbComponent} />
+      <Stack id="header-actions-stack" direction="row" sx={{ gap: 1 }}>
+        <CustomDatePicker/>
+        <ColorModeIconDropdown/>
       </Stack>
     </Stack>
   );

@@ -43,7 +43,7 @@ function ButtonField(props: ButtonFieldProps) {
       aria-label={ariaLabel}
       size="small"
       onClick={() => setOpen?.((prev) => !prev)}
-      startIcon={<CalendarTodayRoundedIcon fontSize="small" />}
+      startIcon={<CalendarTodayRoundedIcon id="custom-date-picker-icon" fontSize="small" />}
       sx={{ minWidth: 'fit-content' }}
     >
       {label ? `${label}` : 'Pick a date'}

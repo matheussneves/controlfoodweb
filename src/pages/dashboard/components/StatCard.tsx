@@ -23,7 +23,7 @@ function getDaysInMonth(month: number, year: number) {
     month: 'short',
   });
   const daysInMonth = date.getDate();
-  const days = [];
+  const days: string[] = [];
   let i = 1;
   while (days.length < daysInMonth) {
     days.push(`${monthName} ${i}`);
@@ -79,30 +79,52 @@ export default function StatCard({
   const trendValues = { up: '+25%', down: '-25%', neutral: '+5%' };
 
   return (
-    <Card variant="outlined" sx={{ height: '100%', flexGrow: 1 }}>
-      <CardContent>
-        <Typography component="h2" variant="subtitle2" gutterBottom>
+    <Card id="stat-card" variant="outlined" sx={{ height: '100%', flexGrow: 1 }}>
+      <CardContent id="stat-card-content">
+        <Typography
+          id="stat-card-title"
+          component="h2"
+          variant="subtitle2"
+          gutterBottom
+        >
           {title}
         </Typography>
         <Stack
+          id="stat-card-stack"
           direction="column"
           sx={{ justifyContent: 'space-between', flexGrow: '1', gap: 1 }}
         >
-          <Stack sx={{ justifyContent: 'space-between' }}>
+          <Stack
+            id="stat-card-inner-stack"
+            sx={{ justifyContent: 'space-between' }}
+          >
             <Stack
+              id="stat-card-header-stack"
               direction="row"
               sx={{ justifyContent: 'space-between', alignItems: 'center' }}
             >
-              <Typography variant="h4" component="p">
+              <Typography id="stat-card-value" variant="h4" component="p">
                 {value}
               </Typography>
-              <Chip size="small" color={color} label={trendValues[trend]} />
+              <Chip
+                id="stat-card-trend-chip"
+                size="small"
+                color={color}
+                label={trendValues[trend]}
+              />
             </Stack>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            <Typography
+              id="stat-card-interval"
+              variant="caption"
+              sx={{ color: 'text.secondary' }}
+            >
               {interval}
             </Typography>
           </Stack>
-          <Box sx={{ width: '100%', height: 50 }}>
+          <Box
+            id="stat-card-chart-box"
+            sx={{ width: '100%', height: 50 }}
+          >
             <SparkLineChart
               colors={[chartColor]}
               data={data}
@@ -119,7 +141,10 @@ export default function StatCard({
                 },
               }}
             >
-              <AreaGradient color={chartColor} id={`area-gradient-${value}`} />
+              <AreaGradient
+                id={`stat-card-area-gradient-${value}`}
+                color={chartColor}
+              />
             </SparkLineChart>
           </Box>
         </Stack>

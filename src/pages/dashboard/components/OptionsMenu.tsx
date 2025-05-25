@@ -28,15 +28,16 @@ export default function OptionsMenu() {
   return (
     <React.Fragment>
       <MenuButton
+        id="options-menu-button"
         aria-label="Open menu"
         onClick={handleClick}
         sx={{ borderColor: 'transparent' }}
       >
-        <MoreVertRoundedIcon />
+        <MoreVertRoundedIcon id="options-menu-icon" />
       </MenuButton>
       <Menu
+        id="options-menu"
         anchorEl={anchorEl}
-        id="menu"
         open={open}
         onClose={handleClose}
         onClick={handleClose}
@@ -54,10 +55,15 @@ export default function OptionsMenu() {
           },
         }}
       >
-        <MenuItem onClick={handleClose}>Minha conta</MenuItem>
-        <Divider />
+        <MenuItem id="options-menu-item-account" onClick={handleClose}>
+          Minha conta
+        </MenuItem>
+        <Divider id="options-menu-divider" />
         <MenuItem
-          onClick={() => {navigate("/")}}
+          id="options-menu-item-logout"
+          onClick={() => {
+            navigate("/");
+          }}
           sx={{
             [`& .${listItemIconClasses.root}`]: {
               ml: 'auto',
@@ -65,8 +71,8 @@ export default function OptionsMenu() {
             },
           }}
         >
-          <ListItemText>Sair</ListItemText>
-          <ListItemIcon>
+          <ListItemText id="options-menu-item-logout-text">Sair</ListItemText>
+          <ListItemIcon id="options-menu-item-logout-icon">
             <LogoutRoundedIcon fontSize="small" />
           </ListItemIcon>
         </MenuItem>

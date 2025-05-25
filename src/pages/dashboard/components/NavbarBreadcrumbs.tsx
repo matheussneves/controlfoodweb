@@ -7,7 +7,7 @@ import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   margin: theme.spacing(1, 0),
   [`& .${breadcrumbsClasses.separator}`]: {
-    color: (theme.vars || theme).palette.action.disabled,
+    color: theme.palette.action.disabled,
     margin: 1,
   },
   [`& .${breadcrumbsClasses.ol}`]: {
@@ -15,14 +15,19 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   },
 }));
 
-export default function NavbarBreadcrumbs({ breadcrumbComponent }) {
+interface NavbarBreadcrumbsProps {
+  breadcrumbComponent: React.ReactNode;
+}
+
+export default function NavbarBreadcrumbs({ breadcrumbComponent }: NavbarBreadcrumbsProps) {
   return (
     <StyledBreadcrumbs
+      id="navbar-breadcrumbs"
       aria-label="breadcrumb"
-      separator={<NavigateNextRoundedIcon fontSize="small" />}
+      separator={<NavigateNextRoundedIcon id="navbar-breadcrumbs-separator" fontSize="small" />}
     >
-      <Typography variant="body1">Dashboard</Typography>
-      <Typography variant="body1" sx={{ color: 'text.primary', fontWeight: 600 }}>
+      <Typography id="navbar-breadcrumbs-dashboard" variant="body1">Dashboard</Typography>
+      <Typography id="navbar-breadcrumbs-current" variant="body1" sx={{ color: 'text.primary', fontWeight: 600 }}>
         {breadcrumbComponent}
       </Typography>
     </StyledBreadcrumbs>

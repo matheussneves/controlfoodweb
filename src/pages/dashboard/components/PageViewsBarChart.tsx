@@ -10,18 +10,19 @@ import { useTheme } from '@mui/material/styles';
 export default function PageViewsBarChart() {
   const theme = useTheme();
   const colorPalette = [
-    (theme.vars || theme).palette.primary.dark,
-    (theme.vars || theme).palette.primary.main,
-    (theme.vars || theme).palette.primary.light,
+    theme.palette.primary.dark,
+    theme.palette.primary.main,
+    theme.palette.primary.light,
   ];
   return (
-    <Card variant="outlined" sx={{ width: '100%' }}>
-      <CardContent>
-        <Typography component="h2" variant="subtitle2" gutterBottom>
+    <Card id="page-views-bar-chart-card" variant="outlined" sx={{ width: '100%' }}>
+      <CardContent id="page-views-bar-chart-card-content">
+        <Typography id="page-views-bar-chart-title" component="h2" variant="subtitle2" gutterBottom>
           Mais vendidos
         </Typography>
-        <Stack sx={{ justifyContent: 'space-between' }}>
+        <Stack id="page-views-bar-chart-stack" sx={{ justifyContent: 'space-between' }}>
           <Stack
+            id="page-views-bar-chart-inner-stack"
             direction="row"
             sx={{
               alignContent: { xs: 'center', sm: 'flex-start' },
@@ -30,7 +31,7 @@ export default function PageViewsBarChart() {
             }}
           >    
           </Stack>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+          <Typography id="page-views-bar-chart-caption" variant="caption" sx={{ color: 'text.secondary' }}>
             Tipos mais pedidos
           </Typography>
         </Stack>

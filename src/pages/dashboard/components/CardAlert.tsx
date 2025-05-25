@@ -65,19 +65,20 @@ export default function CardAlert() {
   };
 
   return (
-    <Box>
+    <Box id="card-alert-box">
       {lowStockItems.map((item) => (
         <Card
-          key={item.id}  // Cada item agora tem uma chave única
+          id={`card-alert-item-${item.id}`}
+          key={item.id}
           variant="outlined"
           sx={{ m: 1.5, p: 1.5 }}
         >
-          <ReportGmailerrorredIcon fontSize="small" sx={{ mr: 1 }} />
-          <CardContent sx={{ flex: '1 0 auto', p: 0 }}>
-            <Typography gutterBottom sx={{ fontWeight: 600 }}>
+          <ReportGmailerrorredIcon id={`card-alert-icon-${item.id}`} fontSize="small" sx={{ mr: 1 }} />
+          <CardContent id={`card-alert-content-${item.id}`} sx={{ flex: '1 0 auto', p: 0 }}>
+            <Typography id={`card-alert-title-${item.id}`} gutterBottom sx={{ fontWeight: 600 }}>
               Estoque acabando!
             </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            <Typography id={`card-alert-description-${item.id}`} variant="body2" sx={{ color: 'text.secondary' }}>
               Seu estoque de {getIngredienteDescricao(item.ingrediente_Id_ingrediente)} está com apenas {item.quantidade} unidades.
             </Typography>
           </CardContent>

@@ -37,6 +37,7 @@ export default function AppNavbar() {
 
   return (
     <AppBar
+      id="app-navbar"
       position="fixed"
       sx={{
         display: { xs: 'auto', md: 'none' },
@@ -48,8 +49,9 @@ export default function AppNavbar() {
         top: 'var(--template-frame-height, 0px)',
       }}
     >
-      <Toolbar variant="regular">
+      <Toolbar id="app-navbar-toolbar" variant="regular">
         <Stack
+          id="app-navbar-stack"
           direction="row"
           sx={{
             alignItems: 'center',
@@ -59,20 +61,26 @@ export default function AppNavbar() {
           }}
         >
           <Stack
+            id="app-navbar-title-stack"
             direction="row"
             spacing={1}
             sx={{ justifyContent: 'center', mr: 'auto' }}
           >
-            <CustomIcon />
-            <Typography variant="h4" component="h1" sx={{ color: 'text.primary' }}>
+            <CustomIcon  />
+            <Typography
+              id="app-navbar-title"
+              variant="h4"
+              component="h1"
+              sx={{ color: 'text.primary' }}
+            >
               Dashboard
             </Typography>
           </Stack>
-          <ColorModeIconDropdown />
-          <MenuButton aria-label="menu" onClick={toggleDrawer(true)}>
-            <MenuRoundedIcon />
+          <ColorModeIconDropdown  />
+          <MenuButton id="app-navbar-menu-button" aria-label="menu" onClick={toggleDrawer(true)}>
+            <MenuRoundedIcon id="app-navbar-menu-icon" />
           </MenuButton>
-          <SideMenuMobile open={open} toggleDrawer={toggleDrawer} />
+          <SideMenuMobile  open={open} toggleDrawer={toggleDrawer} />
         </Stack>
       </Toolbar>
     </AppBar>
@@ -82,6 +90,7 @@ export default function AppNavbar() {
 export function CustomIcon() {
   return (
     <Box
+      id="custom-icon-box"
       sx={{
         width: '1.5rem',
         height: '1.5rem',
@@ -99,7 +108,7 @@ export function CustomIcon() {
         boxShadow: 'inset 0 2px 5px rgba(255, 255, 255, 0.3)',
       }}
     >
-      <DashboardRoundedIcon color="inherit" sx={{ fontSize: '1rem' }} />
+      <DashboardRoundedIcon id="custom-icon-dashboard-icon" color="inherit" sx={{ fontSize: '1rem' }} />
     </Box>
   );
 }

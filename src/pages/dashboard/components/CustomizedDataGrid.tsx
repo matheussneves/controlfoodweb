@@ -22,21 +22,25 @@ export default function CustomizedDataGrid() {
         filterPanel: {
           filterFormProps: {
             logicOperatorInputProps: {
+              id: "customized-data-grid-logic-operator-input",
               variant: 'outlined',
               size: 'small',
             },
             columnInputProps: {
+              id: "customized-data-grid-column-input",
               variant: 'outlined',
               size: 'small',
               sx: { mt: 'auto' },
             },
             operatorInputProps: {
+              id: "customized-data-grid-operator-input",
               variant: 'outlined',
               size: 'small',
               sx: { mt: 'auto' },
             },
             valueInputProps: {
               InputComponentProps: {
+                id: "customized-data-grid-value-input",
                 variant: 'outlined',
                 size: 'small',
               },

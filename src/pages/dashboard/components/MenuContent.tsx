@@ -26,30 +26,39 @@ const secondaryListItems = [
   { text: 'Entregadores', icon: <AssignmentRoundedIcon />, component: 'EntregadoresPage' },
 ];
 
-export default function MenuContent({ setSelectedComponent}) {
-  const handleMenuClick = (item) => {
-    setSelectedComponent(item.text);
+interface MenuContentProps {
+  setSelectedComponent: (component: string) => void;
+}
 
+export default function MenuContent({ setSelectedComponent }: MenuContentProps) {
+  interface MenuItem {
+    text: string;
+    icon: React.ReactNode;
+    component: string;
+  }
+
+  const handleMenuClick = (item: MenuItem): void => {
+    setSelectedComponent(item.text);
   };
   return (
-    <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
-      <List dense>
+    <Stack id="menu-content-stack" sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
+      <List id="menu-content-main-list" dense>
         {mainListItems.map((item, index) => (
-          <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton onClick={() => handleMenuClick(item)}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
+          <ListItem id={`menu-content-main-list-item-${index}`} key={index} disablePadding sx={{ display: 'block' }}>
+            <ListItemButton id={`menu-content-main-list-item-button-${index}`} onClick={() => handleMenuClick(item)}>
+              <ListItemIcon id={`menu-content-main-list-item-icon-${index}`}>{item.icon}</ListItemIcon>
+              <ListItemText id={`menu-content-main-list-item-text-${index}`} primary={item.text} />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
 
-      <List dense>
+      <List id="menu-content-secondary-list" dense>
         {secondaryListItems.map((item, index) => (
-          <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton onClick={() => handleMenuClick(item)}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
+          <ListItem id={`menu-content-secondary-list-item-${index}`} key={index} disablePadding sx={{ display: 'block' }}>
+            <ListItemButton id={`menu-content-secondary-list-item-button-${index}`} onClick={() => handleMenuClick(item)}>
+              <ListItemIcon id={`menu-content-secondary-list-item-icon-${index}`}>{item.icon}</ListItemIcon>
+              <ListItemText id={`menu-content-secondary-list-item-text-${index}`} primary={item.text} />
             </ListItemButton>
           </ListItem>
         ))}
